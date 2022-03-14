@@ -1,1 +1,1 @@
-"# D3D-Agata-Engine" 
+"# D3D-Agata-Engine (GC2)" 
