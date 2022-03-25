@@ -93,6 +93,96 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Tractor//foto2.jpg").
 		Build());
+	
+	x = 20.0f;
+	z = -40.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Casa 3//casa1.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//Casa 3//House4_lambert1_AlbedoTransparency.png").
+		Build());
+
+	x = -17.0f;
+	z = -45.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//church//church.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//church//chiesa_Base_Color.jpg").
+		Build());
+
+	x = 5.0f;
+	z = -12.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Table//Table.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//Table//DefaultMaterial_Base_Color.png").
+		Build());
+
+	x = -15.0f;
+	z = -16.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//kiosk//kiosco.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//kiosk//3.png").
+		Build());
+
+	x = -45.0f;
+	z = -23.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//farm//farm.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//farm//FarmUV.png").
+		Build());
+
+	x = 18.0f;
+	z = 8.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//bench//bench.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
+		Build());
+
+	x = -18.0f;
+	z = -3.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//bench//bench.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
+		Build());
+
+	x = -15.0f;
+	z = 10.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Stand//stand.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//Stand//FoodStand_Base_Color.png").
+		Build());
+
+	x = 22.0f;
+	z = 20.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//toilet//toilet.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//toilet//toilet.png").
+		Build());
 
 	/*
 	x = -10.0f;
