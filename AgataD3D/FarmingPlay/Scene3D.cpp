@@ -86,13 +86,13 @@ void Scene3D::OnInit() {
 
 	x = 10.0f;
 	z = -20.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Vehicle = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Tractor//tractor.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		Scale(DX::XMFLOAT3(0.8f, 0.8f, 0.8f)).
 		DiffuseTexture("Assets//Models//Tractor//foto2.jpg").
-		Build());
+		Build();
 	
 	x = 20.0f;
 	z = -40.0f;
@@ -309,12 +309,14 @@ void Scene3D::Update() {
 	m_Skybox->OnUpdate(m_Dt);
 	m_Water->OnUpdate(m_Dt);
 
+	m_Vehicle->FollowCamera(m_Camera);
+
 
 	if (m_Cycle >= MORNING_TO_DAY_MIN && m_Cycle <= MORNING_TO_DAY_MAX) {
 
 		// Conversion de [MORNING_TO_DAY_MIN, MORNING_TO_DAY_MAX] a [0, 1]
 		float MorningLength = (MORNING_TO_DAY_MAX - MORNING_TO_DAY_MIN);
-		float t = ((m_Cycle - MORNING_TO_DAY_MIN) * 1) / MorningLength;
+		float t = (m_Cycle - MORNING_TO_DAY_MIN) / MorningLength;
 
 		// Conversion de interpolacion lineal a smootherstep
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
@@ -326,8 +328,8 @@ void Scene3D::Update() {
 	if (m_Cycle >= DAY_TO_SUNSET_MIN && m_Cycle <= DAY_TO_SUNSET_MAX) {
 
 		// Conversion de [DAY_TO_SUNSET_MIN, DAY_TO_SUNSET_MAX] a [0, 1]
-		float MorningLength = (DAY_TO_SUNSET_MAX - DAY_TO_SUNSET_MIN);
-		float t = ((m_Cycle - DAY_TO_SUNSET_MIN) * 1) / MorningLength;
+		float DayLength = (DAY_TO_SUNSET_MAX - DAY_TO_SUNSET_MIN);
+		float t = (m_Cycle - DAY_TO_SUNSET_MIN) / DayLength;
 
 		// Conversion de interpolacion lineal a smootherstep
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
@@ -339,8 +341,8 @@ void Scene3D::Update() {
 	if (m_Cycle >= SUNSET_TO_NIGHT_MIN && m_Cycle <= SUNSET_TO_NIGHT_MAX) {
 
 		// Conversion de [SUNSET_TO_NIGHT_MIN, SUNSET_TO_NIGHT_MAX] a [0, 1]
-		float MorningLength = (SUNSET_TO_NIGHT_MAX - SUNSET_TO_NIGHT_MIN);
-		float t = ((m_Cycle - SUNSET_TO_NIGHT_MIN) * 1) / MorningLength;
+		float SunsetLength = (SUNSET_TO_NIGHT_MAX - SUNSET_TO_NIGHT_MIN);
+		float t = (m_Cycle - SUNSET_TO_NIGHT_MIN) / SunsetLength;
 
 		// Conversion de interpolacion lineal a smootherstep
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
@@ -352,8 +354,8 @@ void Scene3D::Update() {
 	if (m_Cycle >= NIGHT_TO_MORNING_MIN && m_Cycle <= NIGHT_TO_MORNING_MAX) {
 
 		// Conversion de [NIGHT_TO_MORNING_MIN, NIGHT_TO_MORNING_MAX] a [0, 1]
-		float MorningLength = (NIGHT_TO_MORNING_MAX - NIGHT_TO_MORNING_MIN);
-		float t = ((m_Cycle - NIGHT_TO_MORNING_MIN) * 1) / MorningLength;
+		float NightLength = (NIGHT_TO_MORNING_MAX - NIGHT_TO_MORNING_MIN);
+		float t = (m_Cycle - NIGHT_TO_MORNING_MIN) / NightLength;
 
 		// Conversion de interpolacion lineal a smootherstep
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
@@ -361,8 +363,6 @@ void Scene3D::Update() {
 		m_Skybox->SetBlendFactor(DX::XMFLOAT4(t, 0.0f, 0.0f, 1 - t));
 
 	}
-
-
 
 }
 
@@ -436,8 +436,12 @@ void Scene3D::OnWindowCloseEvent(Agata::WindowCloseEvent e) {
 
 void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 
-	if (e.GetKeyCode() == Agata::KeyCode::KeyA) {
-		//Agata::Renderer::SetDefaultFramebuffer();
+	if (e.GetKeyCode() == Agata::KeyCode::KeyEscape && e.GetKeyAction() == Agata::KeyAction::Press) {
+		m_Running = false;
+	}
+
+	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press) {
+		m_Camera->TogglePerson();
 	}
 
 }
@@ -447,6 +451,7 @@ void Scene3D::RenderScene() {
 	for (auto& model : m_Models) {
 		model->OnRender();
 	}
+	m_Vehicle->OnRender();
 
 	m_SkyboxShader->Bind();
 	m_Skybox->OnRender();

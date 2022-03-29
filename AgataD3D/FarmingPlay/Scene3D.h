@@ -35,7 +35,7 @@ private:
 
 	std::unique_ptr<Agata::Camera> m_Camera;
 
-	std::shared_ptr<Agata::StaticModel> m_Model;
+	std::shared_ptr<Agata::StaticModel> m_Vehicle;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
 

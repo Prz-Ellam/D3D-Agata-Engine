@@ -182,11 +182,11 @@ namespace Agata {
 			m_Properties.Aspect, m_Properties.NearPlane, m_Properties.FarPlane);
 
 		if (m_FirstPerson) {
-			m_ThirdPosition = DX::XMVectorScale(DX::XMVectorAdd(m_Position, m_Forward), -5.0f);
 			m_View = DX::XMMatrixLookAtLH(m_Position, DX::XMVectorAdd(m_Position, m_Forward), m_Up);
 		}
 		else {
-			m_View = DX::XMMatrixLookAtLH(m_Position, DX::XMVectorAdd(m_Position, m_Forward), m_Up);
+			m_ThirdPosition = DX::XMVectorAdd(m_Position, DX::XMVectorScale(m_Forward, -5.0f));
+			m_View = DX::XMMatrixLookAtLH(m_ThirdPosition, DX::XMVectorAdd(m_ThirdPosition, m_Forward), m_Up);
 		}
 
 	}
@@ -263,6 +263,36 @@ namespace Agata {
 		DX::XMStoreFloat3(&v, m_Position);
 		v.y = y + 1.665;
 		m_Position = DX::XMLoadFloat3(&v);
+
+	}
+
+	DX::XMFLOAT3 Camera::GetDirection() const {
+
+		return DX::XMFLOAT3(0.0f, m_Yaw, m_Pitch);
+
+	}
+
+	float Camera::GetYaw() const {
+
+		return m_Yaw;
+
+	}
+
+	void Camera::TogglePerson() {
+
+		m_FirstPerson = !m_FirstPerson;
+
+	}
+
+	void Camera::SetFirstPerson() {
+
+		m_FirstPerson = true;
+
+	}
+
+	void Camera::SetThirdPerson() {
+
+		m_FirstPerson = false;
 
 	}
 

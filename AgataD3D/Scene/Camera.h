@@ -63,7 +63,14 @@ namespace Agata {
 		DirectX::XMMATRIX GetView() const;
 		DirectX::XMMATRIX GetProjection() const;
 
+		float GetYaw() const;
+
+		void TogglePerson();
+		void SetFirstPerson();
+		void SetThirdPerson();
+
 		DX::XMFLOAT3 GetPosition() const;
+		DX::XMFLOAT3 GetDirection() const;
 		float GetX() const;
 		float GetZ() const;
 		float GetY() const;

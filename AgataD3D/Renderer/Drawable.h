@@ -2,7 +2,7 @@
 #define AGATA_D11_DRAWABLE_H
 #pragma once
 
-#include <DirectXMath.h>
+#include "Camera.h"
 namespace DX = DirectX;
 
 namespace Agata {
@@ -26,6 +26,8 @@ namespace Agata {
 		void SetPosition(const DX::XMFLOAT3& position);
 		void SetRotation(const DX::XMFLOAT3& rotation);
 		void SetScale(const DX::XMFLOAT3& scale);
+
+		void FollowCamera(std::unique_ptr<Camera>& camera);
 	protected:
 		DX::XMMATRIX SetMatrix();
 		DX::XMFLOAT3 m_Position;
