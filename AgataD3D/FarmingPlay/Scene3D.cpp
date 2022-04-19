@@ -23,7 +23,7 @@ void Scene3D::OnInit() {
 
 	 Agata::PerspectiveCameraProps properties = {
 		45.0f,
-		(float)m_Window->GetWidth() / m_Window->GetHeight(),
+		static_cast<float>(m_Window->GetWidth()) / m_Window->GetHeight(),
 		0.1f,
 		1000.0f
 	};
@@ -184,7 +184,7 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//toilet//toilet.png").
 		Build());
 
-	/*
+	
 	x = -10.0f;
 	z = 20.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -202,7 +202,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Bitmap2Material_3_Base_Color.tga.png").
 		Build());
-	*/
+	
 
 	m_SkyboxShader = std::make_shared<Agata::Shader>("SkyboxVertex.cso", "SkyboxPixel.cso");
 	m_SkyboxShader->Bind();
@@ -309,7 +309,7 @@ void Scene3D::Update() {
 	m_Skybox->OnUpdate(m_Dt);
 	m_Water->OnUpdate(m_Dt);
 
-	m_Vehicle->FollowCamera(m_Camera);
+	//m_Vehicle->FollowCamera(m_Camera);
 
 
 	if (m_Cycle >= MORNING_TO_DAY_MIN && m_Cycle <= MORNING_TO_DAY_MAX) {
@@ -403,7 +403,7 @@ void Scene3D::Render() {
 
 
 	Agata::Renderer::BeginScene(m_Camera);
-	Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
+	Agata::Renderer::Clear(0.2f, 0.2f, 0.2f, 1.0f);
 
 	RenderScene();
 
@@ -447,16 +447,16 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 }
 void Scene3D::RenderScene() {
 
-	m_StaticModelShader->Bind();
-	for (auto& model : m_Models) {
-		model->OnRender();
-	}
-	m_Vehicle->OnRender();
-
 	m_SkyboxShader->Bind();
 	m_Skybox->OnRender();
 
 	m_TerrainShader->Bind();
 	m_Terrain->OnRender();
+
+	m_StaticModelShader->Bind();
+	for (auto& model : m_Models) {
+		model->OnRender();
+	}
+	//m_Vehicle->OnRender();
 
 }

@@ -48,7 +48,7 @@ namespace Agata {
 			//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 			m_ForwardAcceleration -= m_Speed;
 		}
-		if (!m_FirstPerson) {
+		if (m_FirstPerson) {
 			if (GetAsyncKeyState(static_cast<int>('A')) & 1 << 16) {
 				//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 				m_RightAcceleration -= m_Speed * HAND;

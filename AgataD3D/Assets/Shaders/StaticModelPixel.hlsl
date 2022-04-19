@@ -8,6 +8,11 @@ SamplerState samplerX : register(s0);
 
 float4 main(PSInput input) : SV_TARGET {
 
-	return tex.Sample(samplerX, input.uv);
+	float4 texColour = tex.Sample(samplerX, input.uv);
+
+	clip(texColour.a < 0.5f ? -1 : 1);
+
+	return texColour;
+
 
 }

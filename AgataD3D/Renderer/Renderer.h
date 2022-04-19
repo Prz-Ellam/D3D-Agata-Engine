@@ -76,6 +76,7 @@ namespace Agata {
 		static ID3D11DepthStencilView* m_DepthStencilView;
 		static ID3D11Texture2D* m_DepthStencil;
 		static ID3D11RasterizerState* m_RasterizerState;
+		static ID3D11BlendState* m_BlendState;
 
 		static D3D11_DEPTH_STENCIL_DESC dsDesc;
 

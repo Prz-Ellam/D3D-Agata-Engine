@@ -13,6 +13,7 @@ namespace Agata {
 	ID3D11DepthStencilView* Renderer::m_DepthStencilView = nullptr;
 	ID3D11Texture2D* Renderer::m_DepthStencil = nullptr;
 	ID3D11RasterizerState* Renderer::m_RasterizerState = nullptr;
+	ID3D11BlendState* Renderer::m_BlendState = nullptr;
 	DirectX::XMMATRIX Renderer::s_View;
 	DirectX::XMMATRIX Renderer::s_Projection;
 	DirectX::XMFLOAT3 Renderer::s_Position;
@@ -153,6 +154,26 @@ namespace Agata {
 		}
 
 		m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+
+
+		D3D11_BLEND_DESC blendDesc = {};
+		auto& blendTarget = blendDesc.RenderTarget[0];
+		blendTarget.BlendEnable = TRUE; // FALSE para no tener alpha blending
+		blendTarget.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendTarget.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendTarget.BlendOp = D3D11_BLEND_OP_ADD;
+		blendTarget.SrcBlendAlpha = D3D11_BLEND_ZERO;
+		blendTarget.DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendTarget.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendTarget.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // FALSE
+		hr = m_Device->CreateBlendState(&blendDesc, &m_BlendState);
+
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		m_DeviceContext->OMSetBlendState(m_BlendState, nullptr, 0xFFFFFFFF);
+
 
 		D3D11_RASTERIZER_DESC rasterDesc = { };
 		rasterDesc.FillMode = D3D11_FILL_SOLID;
