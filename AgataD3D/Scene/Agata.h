@@ -15,6 +15,7 @@
 #include "Billboard.h"
 #include "Fire.h"
 #include "DirectionLight.h"
+#include "Zoom.h"
 
 namespace DX = DirectX;
 

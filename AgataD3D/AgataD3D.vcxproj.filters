@@ -126,6 +126,9 @@
     <ClCompile Include="Scene\DirectionLight.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Zoom.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Events\CharEvent.h">
@@ -260,6 +263,9 @@
     <ClInclude Include="Scene\DirectionLight.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Zoom.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shaders\TerrainVertex.hlsl" />
@@ -276,5 +282,7 @@
     <FxCompile Include="Assets\Shaders\WaterPixel.hlsl" />
     <FxCompile Include="Assets\Shaders\FireVertex.hlsl" />
     <FxCompile Include="Assets\Shaders\FirePixel.hlsl" />
+    <FxCompile Include="Assets\Shaders\ZoomVertex.hlsl" />
+    <FxCompile Include="Assets\Shaders\ZoomPixel.hlsl" />
   </ItemGroup>
 </Project>

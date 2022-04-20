@@ -299,6 +299,11 @@ void Scene3D::OnInit() {
 		DX::XMFLOAT3(20, m_Terrain->GetHeight(20, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
 
 
+	m_ZoomShader = std::make_shared<Agata::Shader>("ZoomVertex.cso", "ZoomPixel.cso");
+	m_ZoomShader->Bind();
+	m_SpyGlass = std::make_shared<Agata::Zoom>("Assets//Images//Zoom//zoom.jpg");
+
+
 	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, -400.0f), 
 		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
 
@@ -473,6 +478,10 @@ void Scene3D::Render() {
 
 	m_WaterShader->Bind();
 	m_Water->OnRender();
+
+
+	m_ZoomShader->Bind();
+	m_SpyGlass->OnRender();
 
 	//m_FBO->UnbindFramebuffer();
 
