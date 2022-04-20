@@ -75,6 +75,8 @@ namespace Agata {
 		float GetZ() const;
 		float GetY() const;
 		void SetY(float y);
+
+		PerspectiveCameraProps& GetPerspectiveCameraPropsRef();
 	};
 
 }

@@ -302,5 +302,11 @@ namespace Agata {
 		m_FirstPerson = false;
 
 	}
+	PerspectiveCameraProps& Camera::GetPerspectiveCameraPropsRef() { 
+
+		return m_Properties; 
+
+	}
+
 
 }

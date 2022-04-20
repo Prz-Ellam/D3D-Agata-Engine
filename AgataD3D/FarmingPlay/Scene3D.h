@@ -60,6 +60,8 @@ private:
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;
 
+
+	bool m_IsZoom = false;
 };
 
 

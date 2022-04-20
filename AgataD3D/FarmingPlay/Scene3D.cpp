@@ -443,7 +443,7 @@ void Scene3D::Render() {
 	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()));
 	m_Camera->Update(m_Terrain);
 	//m_Camera->MoveHeight(-distance);
-	
+
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
 	Agata::Renderer::BeginScene(m_Camera, m_Light);
@@ -479,9 +479,10 @@ void Scene3D::Render() {
 	m_WaterShader->Bind();
 	m_Water->OnRender();
 
-
-	m_ZoomShader->Bind();
-	m_SpyGlass->OnRender();
+	if (m_IsZoom) {
+		m_ZoomShader->Bind();
+		m_SpyGlass->OnRender();
+	}
 
 	//m_FBO->UnbindFramebuffer();
 
@@ -515,6 +516,18 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 
 	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press) {
 		m_Camera->TogglePerson();
+	}
+
+	if (e.GetKeyCode() == Agata::KeyCode::KeyZ && e.GetKeyAction() == Agata::KeyAction::Press) {
+		m_IsZoom = !m_IsZoom;
+		if (m_IsZoom) {
+			m_Camera->SetSensitivity(124.44444f);
+			m_Camera->GetPerspectiveCameraPropsRef().Fov = 7.0f;
+		}
+		else {
+			m_Camera->SetSensitivity(800.0f);
+			m_Camera->GetPerspectiveCameraPropsRef().Fov = 45.0f;
+		}
 	}
 
 }
