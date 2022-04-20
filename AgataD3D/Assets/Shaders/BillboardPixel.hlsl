@@ -1,4 +1,12 @@
-float4 main() : SV_TARGET
+struct PSInput {
+	float4 pos : SV_POSITION;
+	float2 uv : TEXCOORDS;
+};
+
+Texture2D tex : register(t0);
+SamplerState samplerX : register(s0);
+
+float4 main(PSInput input) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return tex.Sample(samplerX, input.uv);
 }

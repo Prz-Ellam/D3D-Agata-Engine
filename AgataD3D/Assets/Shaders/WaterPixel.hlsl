@@ -22,7 +22,7 @@ float4 main(PSInput psInput) : SV_TARGET
 
 	float4 color = lerp(t_Reflection.Sample(waterSampler, reflectionTexCoords),
 		t_Refraction.Sample(waterSampler, refractionTexCoords), 0.5f);
-	color = lerp(color, psInput.colour, 0.2f);
+	color = lerp(color, psInput.colour, 0.5f);
 
 	return color;
 }

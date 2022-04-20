@@ -4,6 +4,7 @@
 
 #include "Mesh.h"
 #include "Loader.h"
+#include "Renderer.h"
 
 namespace Agata {
 

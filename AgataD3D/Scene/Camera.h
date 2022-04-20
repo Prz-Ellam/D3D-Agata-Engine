@@ -4,8 +4,6 @@
 
 #include "Window.h"
 
-namespace DX = DirectX;
-
 #ifdef AGATA_D11
 #define HAND -1
 #else
@@ -69,8 +67,8 @@ namespace Agata {
 		void SetFirstPerson();
 		void SetThirdPerson();
 
-		DX::XMFLOAT3 GetPosition() const;
-		DX::XMFLOAT3 GetDirection() const;
+		DirectX::XMFLOAT3 GetPosition() const;
+		DirectX::XMFLOAT3 GetDirection() const;
 		float GetX() const;
 		float GetZ() const;
 		float GetY() const;

@@ -15,6 +15,9 @@ namespace Agata {
 		DX::XMMATRIX c_Model;
 		DX::XMMATRIX c_View;
 		DX::XMMATRIX c_Projection;
+		DX::XMFLOAT4 c_CameraPosition;
+		DX::XMFLOAT4 c_LightPosition;
+		DX::XMFLOAT4 c_LightColour;
 	};
 
 	class StaticModel : public Drawable {

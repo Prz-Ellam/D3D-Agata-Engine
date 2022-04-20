@@ -260,7 +260,29 @@ void Scene3D::OnInit() {
 		"Assets//Images//Water//normalMap.png", 
 		m_Window->GetWidth(), m_Window->GetHeight());
 
+	
+	m_BillboardShader = std::make_shared<Agata::Shader>("BillboardVertex.cso", "BillboardPixel.cso");
+	m_BillboardShader->Bind();
+
+	m_Tree1 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//Autumn_Pine.png", 
+		DX::XMFLOAT3(13, m_Terrain->GetHeight(13, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
+	m_Tree2 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//tree2.png", 
+		DX::XMFLOAT3(10, m_Terrain->GetHeight(10, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
+
+	m_FireShader = std::make_shared<Agata::Shader>("FireVertex.cso", "FirePixel.cso");
+	m_FireShader->Bind();
+	m_Fire = std::make_shared<Agata::Fire>("Assets//Images//Fire//rampFire.gif", 
+		"Assets//Images//Fire//alphaFire.gif", 
+		"Assets//Images//Fire//dudv.png", 
+		"Assets//Images//Fire//fireNoise.png",
+		DX::XMFLOAT3(20, m_Terrain->GetHeight(20, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
+
+
+	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, 400.0f), 
+		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
+
 	m_Cycle = 0.0f;
+
 
 }
 
@@ -308,6 +330,10 @@ void Scene3D::Update() {
 	m_Camera->Update();
 	m_Skybox->OnUpdate(m_Dt);
 	m_Water->OnUpdate(m_Dt);
+	m_Fire->OnUpdate(m_Dt);
+
+	m_Tree1->OnUpdate(m_Dt);
+	m_Tree2->OnUpdate(m_Dt);
 
 	//m_Vehicle->FollowCamera(m_Camera);
 
@@ -377,7 +403,7 @@ void Scene3D::Render() {
 	m_Camera->Update();
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
-	Agata::Renderer::BeginScene(m_Camera);
+	Agata::Renderer::BeginScene(m_Camera, m_Light);
 
 	m_Water->BeginReflection();
 	RenderScene();
@@ -392,7 +418,7 @@ void Scene3D::Render() {
 	m_Camera->Update();
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
-	Agata::Renderer::BeginScene(m_Camera);
+	Agata::Renderer::BeginScene(m_Camera, m_Light);
 
 	m_Water->BeginRefraction();
 	RenderScene();
@@ -402,7 +428,7 @@ void Scene3D::Render() {
 
 
 
-	Agata::Renderer::BeginScene(m_Camera);
+	Agata::Renderer::BeginScene(m_Camera, m_Light);
 	Agata::Renderer::Clear(0.2f, 0.2f, 0.2f, 1.0f);
 
 	RenderScene();
@@ -458,5 +484,12 @@ void Scene3D::RenderScene() {
 		model->OnRender();
 	}
 	//m_Vehicle->OnRender();
+
+	m_BillboardShader->Bind();
+	m_Tree1->OnRender();
+	m_Tree2->OnRender();
+
+	m_FireShader->Bind();
+	m_Fire->OnRender();
 
 }

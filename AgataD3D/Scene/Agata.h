@@ -12,5 +12,10 @@
 #include "Framebuffer.h"
 #include "Quad.h"
 #include "Water.h"
+#include "Billboard.h"
+#include "Fire.h"
+#include "DirectionLight.h"
+
+namespace DX = DirectX;
 
 #endif

@@ -43,13 +43,21 @@ private:
 	std::shared_ptr<Agata::Skybox> m_Skybox;
 	std::shared_ptr<Agata::Water> m_Water;
 
+	std::shared_ptr<Agata::Billboard> m_Tree1, m_Tree2;
+	std::shared_ptr<Agata::Fire> m_Fire;
+
 	std::shared_ptr<Agata::Shader> m_StaticModelShader;
 	std::shared_ptr<Agata::Shader> m_TerrainShader;
 	std::shared_ptr<Agata::Shader> m_SkyboxShader;
 	std::shared_ptr<Agata::Shader> m_QuadShader;
 	std::shared_ptr<Agata::Shader> m_WaterShader;
+	std::shared_ptr<Agata::Shader> m_BillboardShader;
+	std::shared_ptr<Agata::Shader> m_FireShader;
 
 	std::shared_ptr<Agata::Quad> m_Quad;
+
+	std::shared_ptr<Agata::DirectionLight> m_Light;
+
 };
 
 

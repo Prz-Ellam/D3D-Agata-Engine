@@ -4,6 +4,7 @@
 
 #include "Window.h"
 #include "Camera.h"
+#include "DirectionLight.h"
 
 namespace Agata {
 
@@ -33,7 +34,7 @@ namespace Agata {
 		static void DrawIndexes(uint32_t indexCount);
 		static void DrawIndexes(Mesh* mesh);
 
-		static void BeginScene(std::unique_ptr<Camera>& camera);
+		static void BeginScene(std::unique_ptr<Camera>& camera, std::shared_ptr<DirectionLight>& light);
 
 		static ID3D11Device* GetDevice() {
 			return m_Device;
@@ -55,6 +56,10 @@ namespace Agata {
 			return s_Position;
 		}
 
+		static DirectX::XMFLOAT3 GetDirection() {
+			return s_Direction;
+		}
+
 		static void SetDefaultFramebuffer() {
 			m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 		}
@@ -65,6 +70,10 @@ namespace Agata {
 
 		static IDXGISwapChain* GetSwapChain() {
 			return m_SwapChain;
+		}
+		
+		static std::shared_ptr<DirectionLight>& GetLight() {
+			return s_Light;
 		}
 
 	private:
@@ -84,6 +93,9 @@ namespace Agata {
 		static DirectX::XMMATRIX s_Projection;
 		static DirectX::XMFLOAT3 s_Position;
 		static DirectX::XMFLOAT3 s_Direction;
+
+		static std::shared_ptr<DirectionLight> s_Light;
+
 	};
 
 }

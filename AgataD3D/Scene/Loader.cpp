@@ -261,14 +261,28 @@ namespace Agata {
 
 		std::vector<Vertex> vertices;
 		vertices.resize(4);
-		vertices[0].pos = DX::XMFLOAT3(-0.5f, 0.5f, 1.0f);
-		vertices[1].pos = DX::XMFLOAT3(0.5f, 0.5f, 1.0f);
-		vertices[2].pos = DX::XMFLOAT3(0.5f, -0.5f, 1.0f);
-		vertices[3].pos = DX::XMFLOAT3(-0.5f, -0.5f, 1.0f);
-		vertices[0].uv =  DX::XMFLOAT2(0.0f, 1.0f);
-		vertices[1].uv =  DX::XMFLOAT2(1.0f, 1.0f);
-		vertices[2].uv =  DX::XMFLOAT2(1.0f, 0.0f);
-		vertices[3].uv =  DX::XMFLOAT2(0.0f, 0.0f);
+		vertices[0].pos = DX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
+		vertices[1].pos = DX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+		vertices[2].pos = DX::XMFLOAT3(1.0f, 1.0f, 0.0f);
+		vertices[3].pos = DX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
+
+		vertices[0].uv =  DX::XMFLOAT2(0.0f, 0.0f);
+		vertices[1].uv =  DX::XMFLOAT2(1.0f, 0.0f);
+		vertices[2].uv =  DX::XMFLOAT2(1.0f, 1.0f);
+		vertices[3].uv =  DX::XMFLOAT2(0.0f, 1.0f);
+
+		vertices[0].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[1].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[2].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[3].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[0].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[1].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[2].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[3].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[0].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[1].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[2].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[3].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
 		std::vector<UINT> indices;
 		indices.resize(6);

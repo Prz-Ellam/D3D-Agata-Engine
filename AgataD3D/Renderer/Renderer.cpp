@@ -19,6 +19,7 @@ namespace Agata {
 	DirectX::XMFLOAT3 Renderer::s_Position;
 	DirectX::XMFLOAT3 Renderer::s_Direction;
 	D3D11_DEPTH_STENCIL_DESC Renderer::dsDesc = { 0 };
+	std::shared_ptr<DirectionLight> Renderer::s_Light;
 
 	bool Renderer::Init(std::unique_ptr<Window>& window) {
 
@@ -292,11 +293,13 @@ namespace Agata {
 
 	}
 
-	void Renderer::BeginScene(std::unique_ptr<Camera>& camera) {
+	void Renderer::BeginScene(std::unique_ptr<Camera>& camera, std::shared_ptr<DirectionLight>& light) {
 
 		s_Projection = camera->GetProjection();
 		s_View = camera->GetView();
 		s_Position = camera->GetPosition();
+		s_Direction = camera->GetDirection();
+		s_Light = light;
 
 	}
 

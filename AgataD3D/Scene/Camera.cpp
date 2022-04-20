@@ -268,7 +268,10 @@ namespace Agata {
 
 	DX::XMFLOAT3 Camera::GetDirection() const {
 
-		return DX::XMFLOAT3(0.0f, m_Yaw, m_Pitch);
+		DX::XMFLOAT3 v;
+		DX::XMStoreFloat3(&v, m_Forward);
+
+		return v;
 
 	}
 

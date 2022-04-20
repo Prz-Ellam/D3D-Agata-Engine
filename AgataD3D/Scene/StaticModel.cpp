@@ -16,8 +16,8 @@ namespace Agata {
 		m_Material = std::make_shared<Material>(diffuseTex, normalTex, specularTex, ambient, 
 			diffuse, specular, specularPower);
 		m_Transformation = DX::XMMatrixRotationX(m_Rotation.x) *
-			DX::XMMatrixRotationX(m_Rotation.y) *
-			DX::XMMatrixRotationX(m_Rotation.z) * 
+			DX::XMMatrixRotationY(m_Rotation.y) *
+			DX::XMMatrixRotationZ(m_Rotation.z) * 
 			DX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
 			DX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
@@ -28,6 +28,10 @@ namespace Agata {
 		m_Buffer.c_Model = DX::XMMatrixTranspose(m_Transformation);
 		m_Buffer.c_View = DX::XMMatrixTranspose(Renderer::GetView());
 		m_Buffer.c_Projection = DX::XMMatrixTranspose(Renderer::GetProjection());
+		DX::XMFLOAT3 v = Renderer::GetPosition();
+		m_Buffer.c_CameraPosition = DX::XMFLOAT4(v.x, v.y, v.z, 1.0f);
+		m_Buffer.c_LightPosition = Renderer::GetLight()->GetPosition();
+		m_Buffer.c_LightColour = Renderer::GetLight()->GetColour();
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
 
