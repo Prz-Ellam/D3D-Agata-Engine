@@ -301,10 +301,10 @@ namespace Agata {
 
 		std::vector<Vertex> vertices;
 		vertices.resize(4);
-		vertices[0].pos = DX::XMFLOAT3(-0.5f, 0.0f, -0.5f);
-		vertices[1].pos = DX::XMFLOAT3(0.5f, 0.0f, -0.5f);
-		vertices[2].pos = DX::XMFLOAT3(0.5f, 0.0f, 0.5f);
-		vertices[3].pos = DX::XMFLOAT3(-0.5f, 0.0f, 0.5f);
+		vertices[0].pos = DX::XMFLOAT3(-10.5f, 0.0f, -10.5f);
+		vertices[1].pos = DX::XMFLOAT3(10.5f, 0.0f, -10.5f);
+		vertices[2].pos = DX::XMFLOAT3(10.5f, 0.0f, 10.5f);
+		vertices[3].pos = DX::XMFLOAT3(-10.5f, 0.0f, 10.5f);
 		vertices[0].uv =  DX::XMFLOAT2(0.0f, 0.0f);
 		vertices[1].uv =  DX::XMFLOAT2(1.0f, 0.0f);
 		vertices[2].uv =  DX::XMFLOAT2(1.0f, 1.0f);

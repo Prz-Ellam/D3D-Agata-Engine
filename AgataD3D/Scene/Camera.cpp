@@ -4,6 +4,8 @@
 #include "Joystick.h"
 #include "Events/KeyCode.h"
 
+namespace DX = DirectX;
+
 namespace Agata {
 
 	Camera::Camera(const PerspectiveCameraProps& properties, float speed, float sensitivity)
@@ -163,7 +165,7 @@ namespace Agata {
 
 	}
 
-	void Camera::Update() {
+	void Camera::Update(std::shared_ptr<Terrain>& terrain) {
 
 		DX::XMVECTOR direction = DX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		direction = DX::XMVectorSetX(direction, DX::XMScalarCos(DX::XMConvertToRadians(m_Yaw)) * 
@@ -176,7 +178,9 @@ namespace Agata {
 		m_Right = DX::XMVector3Normalize(DX::XMVector3Cross(m_Forward, m_Up));
 
 		// Altura promedio de los ojos de una persona de 1.8m
-		//m_Position.y = terrain.getHeight(m_Position.x, m_Position.z) + 1.665f;
+		m_Position = DX::XMVectorSetY(m_Position, terrain->GetHeight(DX::XMVectorGetX(m_Position), 
+			DX::XMVectorGetZ(m_Position)) + 1.665f);
+		// m_Position.y = terrain->GetHeight(m_Position.x, m_Position.z) + 1.665f;
 
 		m_Projection = DX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(m_Properties.Fov),
 			m_Properties.Aspect, m_Properties.NearPlane, m_Properties.FarPlane);

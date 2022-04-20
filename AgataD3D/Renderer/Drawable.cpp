@@ -3,9 +3,10 @@
 
 namespace Agata {
 
-	Drawable::Drawable(const DX::XMFLOAT3& position, const DX::XMFLOAT3& rotation, 
-		const DX::XMFLOAT3& scale) : m_Position(position), m_Rotation(rotation), m_Scale(scale), 
-		m_Transformation(SetMatrix()) {}
+	Drawable::Drawable(const DX::XMFLOAT3& position, const DX::XMFLOAT3& rotation,
+		const DX::XMFLOAT3& scale) : m_Position(position), m_Rotation(rotation), m_Scale(scale) {
+		m_Transformation = SetMatrix();
+	}
 
 	DX::XMFLOAT3 Drawable::GetPosition() const {
 

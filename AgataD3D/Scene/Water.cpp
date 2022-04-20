@@ -8,7 +8,7 @@ namespace Agata {
 		const DX::XMFLOAT3& scale, const std::string& dudvMap,
 		const std::string& normalMap, uint32_t width, uint32_t height) 
 		: Drawable(position, position, scale), m_MoveFactor(0.0f), m_Refraction(width, height), 
-		m_Reflection(width, height) {
+		m_Reflection(width, height), m_DudvMap(dudvMap), m_NormalMap(normalMap) {
 
 		m_Mesh = Loader::Get().LoadHorizontalQuad();
 		m_CBO = std::make_shared<ConstantBuffer>(&m_Buffer, sizeof(WaterBuffer));
@@ -54,12 +54,18 @@ namespace Agata {
 		m_Buffer.c_View = DX::XMMatrixTranspose(Renderer::GetView());
 		m_Buffer.c_Projection = DX::XMMatrixTranspose(Renderer::GetProjection());
 		m_Buffer.c_Colour = m_Colour;
-		m_Buffer.c_CameraPos = Renderer::GetPosition();
+		DX::XMFLOAT3 v = Renderer::GetPosition();
+		m_Buffer.c_CameraPos = DX::XMFLOAT4(v.x, v.y, v.z, 1.0f);
+		m_Buffer.c_LightPosition = Renderer::GetLight()->GetPosition();
+		m_Buffer.c_LightColour = Renderer::GetLight()->GetColour();
+		m_Buffer.c_Displacement = m_MoveFactor;
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
 
 		m_Reflection.BindTexture(0u);
 		m_Refraction.BindTexture(1u);
+		m_DudvMap.Bind(2u);
+		m_NormalMap.Bind(3u);
 
 		Renderer::DrawIndexes(m_Mesh.get());
 

@@ -18,6 +18,8 @@ namespace Agata {
 		float NearPlane, FarPlane;
 	};
 
+	class Terrain;
+
 	class Camera {
 	private:
 		PerspectiveCameraProps m_Properties;
@@ -50,7 +52,7 @@ namespace Agata {
 		void Move(int x, int y); // Inputs de Mouse
 
 		// Actualiza las matrices de proyeccion y vista
-		void Update();
+		void Update(std::shared_ptr<Terrain>& terrain);
 
 		void SetSpeed(float speed);
 		void SetSensitivity(float sensitivity);

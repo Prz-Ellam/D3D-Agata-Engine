@@ -15,11 +15,6 @@ namespace Agata {
 		m_CBO = std::make_shared<ConstantBuffer>(&m_Buffer, sizeof(m_Buffer));
 		m_Material = std::make_shared<Material>(diffuseTex, normalTex, specularTex, ambient, 
 			diffuse, specular, specularPower);
-		m_Transformation = DX::XMMatrixRotationX(m_Rotation.x) *
-			DX::XMMatrixRotationY(m_Rotation.y) *
-			DX::XMMatrixRotationZ(m_Rotation.z) * 
-			DX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
-			DX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
 	}
 
@@ -36,6 +31,7 @@ namespace Agata {
 		m_CBO->UpdateData(&m_Buffer);
 
 		m_Material->BindDiffuseTexture(0);
+		m_Material->BindNormalTexture(1);
 
 		Renderer::DrawIndexes(m_Mesh.get());
 

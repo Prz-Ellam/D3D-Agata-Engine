@@ -26,7 +26,9 @@ namespace Agata {
 		DX::XMMATRIX c_Model;
 		DX::XMMATRIX c_View;
 		DX::XMMATRIX c_Projection;
-		DX::XMFLOAT3 c_CameraPos;
+		DX::XMFLOAT4 c_CameraPosition;
+		DX::XMFLOAT4 c_LightPosition;
+		DX::XMFLOAT4 c_LightColour;
 		float c_Tiling;
 	};
 
@@ -67,10 +69,10 @@ namespace Agata {
 		Texture2D m_TextureBlue;
 		Texture2D m_TextureBlack;
 
-		//Texture2D redNormal;
-		//Texture2D greenNormal;
-		//Texture2D blueNormal;
-		//Texture2D backgroundNormal;
+		Texture2D m_NormalRed;
+		Texture2D m_NormalGreen;
+		Texture2D m_NormalBlue;
+		Texture2D m_NormalBlack;
 
 		Texture2D m_BlendMap;
 		TerrainProps m_Properties;
@@ -87,10 +89,10 @@ namespace Agata {
 		TerrainBuilder& BlueTexture(const std::string& filePath);
 		TerrainBuilder& BlackTexture(const std::string& filePath);
 
-		//TerrainBuilder& RedNormal(const std::string& filePath);
-		//TerrainBuilder& GreenNormal(const std::string& filePath);
-		//TerrainBuilder& BlueNormal(const std::string& filePath);
-		//TerrainBuilder& BlackNormal(const std::string& filePath);
+		TerrainBuilder& RedNormal(const std::string& filePath);
+		TerrainBuilder& GreenNormal(const std::string& filePath);
+		TerrainBuilder& BlueNormal(const std::string& filePath);
+		TerrainBuilder& BlackNormal(const std::string& filePath);
 
 		TerrainBuilder& Position(const DX::XMFLOAT3& position);
 		TerrainBuilder& Rotation(const DX::XMFLOAT3& rotation);

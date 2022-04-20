@@ -50,6 +50,10 @@ void Scene3D::OnInit() {
 		.GreenTexture("Assets//Images//Terrain//Sand.png")
 		.BlueTexture("Assets//Images//Terrain//Dirt.jpg")
 		.BlackTexture("Assets//Images//Terrain//Grass.jpg")
+		.RedNormal("Assets//Images//Terrain//StreetNorm.png")
+		.GreenNormal("Assets//Images//Terrain//SandNorm.png")
+		.BlueNormal("Assets//Images//Terrain//DirtNorm.png")
+		.BlackNormal("Assets//Images//Terrain//GrassNorm.png")
 		.BlendMap("Assets//Images//Terrain//Splat_Map.png")
 		.TilingFactor(40.0f)
 		.Build();
@@ -66,6 +70,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 1//diff.png").
+		NormalTexture("Assets//Models//Casa 1//norm.png").
 		Build());
 
 	x = 10.0f;
@@ -76,6 +81,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 2//diffuse.png").
+		NormalTexture("Assets//Models//Casa 2//normal.png").
 		Build());
 
 	x = -10.0f;
@@ -106,6 +112,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 3//House4_lambert1_AlbedoTransparency.png").
+		NormalTexture("Assets//Models//Casa 3//House4_lambert1_Normal.png").
 		Build());
 
 	x = -17.0f;
@@ -188,6 +195,16 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//toilet//toilet.png").
 		Build());
 
+	x = -2.7f;
+	z = 0.8f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Cuadro//Cuadro.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
+		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//Cuadro//texture.jpg").
+		Build());
+
 	
 	x = -10.0f;
 	z = 20.0f;
@@ -259,8 +276,8 @@ void Scene3D::OnInit() {
 
 	m_WaterShader = std::make_shared<Agata::Shader>("WaterVertex.cso", "WaterPixel.cso");
 	m_WaterShader->Bind();
-	m_Water = std::make_shared<Agata::Water>(DX::XMFLOAT3(30, 5, 30), DX::XMFLOAT3(0, 0, 0),
-		DX::XMFLOAT3(1, 1, 1), "Assets//Images//Water//dudv.png", 
+	m_Water = std::make_shared<Agata::Water>(DX::XMFLOAT3(30, 1.5, 0), DX::XMFLOAT3(0, 0, 0),
+		DX::XMFLOAT3(2, 2, 2), "Assets//Images//Water//dudv.png", 
 		"Assets//Images//Water//normalMap.png", 
 		m_Window->GetWidth(), m_Window->GetHeight());
 
@@ -335,8 +352,8 @@ void Scene3D::Update() {
 	m_Light->SetPositionZ(z);
 	
 	m_Camera->Move(m_Dt);
-	m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()));
-	m_Camera->Update();
+	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
+	m_Camera->Update(m_Terrain);
 	m_Skybox->OnUpdate(m_Dt);
 	m_Water->OnUpdate(m_Dt);
 	m_Fire->OnUpdate(m_Dt);
@@ -418,8 +435,10 @@ void Scene3D::Render() {
 
 	float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
 	m_Camera->ChangePitchDirection();
-	m_Camera->MoveHeight(-distance);
-	m_Camera->Update();
+	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()));
+	m_Camera->Update(m_Terrain);
+	//m_Camera->MoveHeight(-distance);
+	
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
 	Agata::Renderer::BeginScene(m_Camera, m_Light);
@@ -434,7 +453,7 @@ void Scene3D::Render() {
 
 	m_Camera->MoveHeight(distance);
 	m_Camera->ChangePitchDirection();
-	m_Camera->Update();
+	m_Camera->Update(m_Terrain);
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
 	Agata::Renderer::BeginScene(m_Camera, m_Light);

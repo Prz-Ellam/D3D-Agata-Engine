@@ -6,6 +6,7 @@
 #include "ConstantBuffer.h"
 #include "Framebuffer.h"
 #include "Drawable.h"
+#include "Texture2D.h"
 
 namespace DX = DirectX;
 
@@ -16,7 +17,10 @@ namespace Agata {
 		DX::XMMATRIX c_View;
 		DX::XMMATRIX c_Projection;
 		DX::XMFLOAT4 c_Colour;
-		DX::XMFLOAT3 c_CameraPos;
+		DX::XMFLOAT4 c_CameraPos;
+		DX::XMFLOAT4 c_LightPosition;
+		DX::XMFLOAT4 c_LightColour;
+		FLOAT c_Displacement;
 	};
 
 	class Water : public Drawable {
@@ -24,7 +28,7 @@ namespace Agata {
 		friend class WaterBuilder;
 		Water(const DX::XMFLOAT3& position, const DX::XMFLOAT3& rotation, 
 			const DX::XMFLOAT3& scale, const std::string& dudvMap, 
-			const std::string& normalMap,uint32_t width, uint32_t height);
+			const std::string& normalMap, uint32_t width, uint32_t height);
 		Water(const Water& rhs) = delete;
 		Water(Water&& rhs) noexcept = delete;
 		virtual ~Water() = default;
@@ -44,6 +48,8 @@ namespace Agata {
 		std::shared_ptr<Mesh> m_Mesh;
 		std::shared_ptr<ConstantBuffer> m_CBO;
 		WaterBuffer m_Buffer;
+		Texture2D m_DudvMap;
+		Texture2D m_NormalMap;
 
 		uint32_t m_Width, m_Height;
 

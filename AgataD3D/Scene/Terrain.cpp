@@ -12,7 +12,8 @@ namespace Agata {
 		uint32_t ySize, uint32_t xSize, uint32_t zSize, float tilingFactor)
 		: m_TextureRed(textureRed), m_TextureGreen(textureGreen), m_TextureBlue(textureBlue),
 		m_TextureBlack(textureBlack), m_BlendMap(blendMap), m_TilingFactor(tilingFactor),
-		Drawable(position, position, position) {
+		Drawable(position, position, position), m_NormalRed(redNormal), m_NormalGreen(greenNormal),
+		m_NormalBlue(blueNormal), m_NormalBlack(blackNormal) {
 
 		TerrainParams terrainParams;
 		terrainParams.xSize = xSize;
@@ -82,6 +83,10 @@ namespace Agata {
 		m_Buffer.c_Model = DX::XMMatrixTranspose(DX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z));
 		m_Buffer.c_View = DX::XMMatrixTranspose(Renderer::GetView());
 		m_Buffer.c_Projection = DX::XMMatrixTranspose(Renderer::GetProjection());
+		DX::XMFLOAT3 v =  Renderer::GetPosition();
+		m_Buffer.c_CameraPosition = DX::XMFLOAT4(v.x, v.y, v.z, 1.0f);
+		m_Buffer.c_LightPosition = Renderer::GetLight()->GetPosition();
+		m_Buffer.c_LightColour = Renderer::GetLight()->GetColour();
 		m_Buffer.c_Tiling = m_TilingFactor;
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
@@ -92,6 +97,11 @@ namespace Agata {
 		m_TextureBlue.Bind(2);
 		m_TextureBlack.Bind(3);
 		m_BlendMap.Bind(4);
+
+		m_NormalRed.Bind(5);
+		m_NormalGreen.Bind(6);
+		m_NormalBlue.Bind(7);
+		m_NormalBlack.Bind(8);
 
 		// Se manda a dibujar la malla del terreno
 		Renderer::DrawIndexes(m_Mesh.get());
@@ -168,7 +178,7 @@ namespace Agata {
 		return *this;
 
 	}
-/*
+
 	TerrainBuilder& TerrainBuilder::RedNormal(const std::string& filePath) {
 
 		m_RedNormalTex = filePath;
@@ -178,25 +188,25 @@ namespace Agata {
 
 	TerrainBuilder& TerrainBuilder::GreenNormal(const std::string& filePath) {
 
-		greenNormalTex = filePath;
+		m_GreenNormalTex = filePath;
 		return *this;
 
 	}
 
 	TerrainBuilder& TerrainBuilder::BlueNormal(const std::string& filePath) {
 
-		blueNormalTex = filePath;
+		m_BlueNormalTex = filePath;
 		return *this;
 
 	}
 
 	TerrainBuilder& TerrainBuilder::BlackNormal(const std::string& filePath) {
 
-		normalTex = filePath;
+		m_NormalTex = filePath;
 		return *this;
 
 	}
-*/
+
 	TerrainBuilder& TerrainBuilder::Width(float width) {
 
 		m_Width = width;
