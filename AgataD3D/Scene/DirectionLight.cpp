@@ -20,4 +20,40 @@ namespace Agata {
 
 	}
 
+	void DirectionLight::SetPositionX(float x) {
+
+		m_Position.x = x;
+
+	}
+
+	void DirectionLight::SetPositionY(float y) {
+
+		m_Position.y = y;
+
+	}
+
+	void DirectionLight::SetPositionZ(float z) {
+
+		m_Position.z = z;
+
+	}
+
+	void DirectionLight::SetColourR(float r) {
+
+		m_Colour.x = r;
+
+	}
+
+	void DirectionLight::SetColourG(float g) {
+
+		m_Colour.y = g;
+
+	}
+
+	void DirectionLight::SetColourB(float b) {
+
+		m_Colour.z = b;
+
+	}
+
 }

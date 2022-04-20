@@ -16,6 +16,14 @@ namespace Agata {
 
 		DirectX::XMFLOAT4 GetPosition() const;
 		DirectX::XMFLOAT4 GetColour() const;
+
+		void SetPositionX(float x);
+		void SetPositionY(float y);
+		void SetPositionZ(float z);
+
+		void SetColourR(float r);
+		void SetColourG(float g);
+		void SetColourB(float b);
 	private:
 		DirectX::XMFLOAT3 m_Position;
 		DirectX::XMFLOAT3 m_Colour;

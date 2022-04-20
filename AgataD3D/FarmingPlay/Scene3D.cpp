@@ -3,6 +3,10 @@
 
 #include "Joystick.h"
 
+float lerp(float a, float b, float t) {
+	return a + t * (b - a);
+}
+
 Scene3D::Scene3D(const Agata::WindowParams& windowParams) : Agata::Scene(windowParams) {
 
 	OnInit();
@@ -278,10 +282,10 @@ void Scene3D::OnInit() {
 		DX::XMFLOAT3(20, m_Terrain->GetHeight(20, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
 
 
-	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, 400.0f), 
+	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, -400.0f), 
 		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
 
-	m_Cycle = 0.0f;
+	m_Cycle = 180.0f;
 
 
 }
@@ -301,29 +305,34 @@ void Scene3D::OnRun() {
 
 		m_Timer.Stop();
 		m_Dt = m_Timer.GetMiliseconds();
-		m_Cycle += m_Dt;
-		if (m_Cycle >= 360.0f) {
-			m_Cycle = 0.0f;
-		}
+
+		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
+
 		m_Timer.Restart();
 
 	}
 
 }
 
-#define MORNING_TO_DAY_MIN 20.0f
-#define MORNING_TO_DAY_MAX 45.0f
+#define MORNING_TO_DAY_MIN 160.0f
+#define MORNING_TO_DAY_MAX 135.0f
 
-#define DAY_TO_SUNSET_MIN 135.0f
-#define DAY_TO_SUNSET_MAX 160.0f
+#define DAY_TO_SUNSET_MIN 45.0f
+#define DAY_TO_SUNSET_MAX 20.0f
 
-#define SUNSET_TO_NIGHT_MIN 180.0f
-#define SUNSET_TO_NIGHT_MAX 205.0f
+#define SUNSET_TO_NIGHT_MIN 0.0f
+#define SUNSET_TO_NIGHT_MAX -25.0f
 
-#define NIGHT_TO_MORNING_MIN 315.0f
-#define NIGHT_TO_MORNING_MAX 340.0f
+#define NIGHT_TO_MORNING_MIN -135.0f
+#define NIGHT_TO_MORNING_MAX -160.0f
 
 void Scene3D::Update() {
+
+	float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
+	float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
+
+	m_Light->SetPositionY(y);
+	m_Light->SetPositionZ(z);
 	
 	m_Camera->Move(m_Dt);
 	m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()));
@@ -338,7 +347,7 @@ void Scene3D::Update() {
 	//m_Vehicle->FollowCamera(m_Camera);
 
 
-	if (m_Cycle >= MORNING_TO_DAY_MIN && m_Cycle <= MORNING_TO_DAY_MAX) {
+	if (m_Cycle < MORNING_TO_DAY_MIN && m_Cycle > MORNING_TO_DAY_MAX) {
 
 		// Conversion de [MORNING_TO_DAY_MIN, MORNING_TO_DAY_MAX] a [0, 1]
 		float MorningLength = (MORNING_TO_DAY_MAX - MORNING_TO_DAY_MIN);
@@ -348,10 +357,12 @@ void Scene3D::Update() {
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
 
 		m_Skybox->SetBlendFactor(DX::XMFLOAT4(1 - t, t, 0.0f, 0.0f));
+		m_Light->SetColourG(lerp(0.5f, 1.0f, t));
+		m_Light->SetColourB(lerp(0.5f, 1.0f, t));
 
 	}
 
-	if (m_Cycle >= DAY_TO_SUNSET_MIN && m_Cycle <= DAY_TO_SUNSET_MAX) {
+	if (m_Cycle < DAY_TO_SUNSET_MIN && m_Cycle > DAY_TO_SUNSET_MAX) {
 
 		// Conversion de [DAY_TO_SUNSET_MIN, DAY_TO_SUNSET_MAX] a [0, 1]
 		float DayLength = (DAY_TO_SUNSET_MAX - DAY_TO_SUNSET_MIN);
@@ -361,10 +372,12 @@ void Scene3D::Update() {
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
 
 		m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 1 - t, t, 0.0f));
+		m_Light->SetColourG(lerp(1.0f, 0.5f, t));
+		m_Light->SetColourB(lerp(1.0f, 0.5f, t));
 
 	}
 
-	if (m_Cycle >= SUNSET_TO_NIGHT_MIN && m_Cycle <= SUNSET_TO_NIGHT_MAX) {
+	if (m_Cycle < SUNSET_TO_NIGHT_MIN && m_Cycle > SUNSET_TO_NIGHT_MAX) {
 
 		// Conversion de [SUNSET_TO_NIGHT_MIN, SUNSET_TO_NIGHT_MAX] a [0, 1]
 		float SunsetLength = (SUNSET_TO_NIGHT_MAX - SUNSET_TO_NIGHT_MIN);
@@ -374,10 +387,13 @@ void Scene3D::Update() {
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
 
 		m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 0.0f, 1 - t, t));
+		m_Light->SetColourR(lerp(1.0f, 0.05f, t));
+		m_Light->SetColourG(lerp(0.5f, 0.15f, t));
+		m_Light->SetColourB(lerp(0.5f, 0.6f, t));
 
 	}
 
-	if (m_Cycle >= NIGHT_TO_MORNING_MIN && m_Cycle <= NIGHT_TO_MORNING_MAX) {
+	if (m_Cycle < NIGHT_TO_MORNING_MIN && m_Cycle > NIGHT_TO_MORNING_MAX) {
 
 		// Conversion de [NIGHT_TO_MORNING_MIN, NIGHT_TO_MORNING_MAX] a [0, 1]
 		float NightLength = (NIGHT_TO_MORNING_MAX - NIGHT_TO_MORNING_MIN);
@@ -387,6 +403,9 @@ void Scene3D::Update() {
 		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
 
 		m_Skybox->SetBlendFactor(DX::XMFLOAT4(t, 0.0f, 0.0f, 1 - t));
+		m_Light->SetColourR(lerp(0.05f, 1.0f, t));
+		m_Light->SetColourG(lerp(0.15f, 0.5f, t));
+		m_Light->SetColourB(lerp(0.6f, 0.5f, t));
 
 	}
 
