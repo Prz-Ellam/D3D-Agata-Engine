@@ -154,6 +154,67 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//farm//FarmUV.png").
 		Build());
+	
+	x = 3.0f;
+	z = -47.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//plants.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Plants_Texture.png").
+		Build());
+
+	x = -40.0f;//3
+	z = -33.0f;//-45
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//Planta1//planta1.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Planta1//Plants_Texture.png").
+		Build());
+
+	x = 15.0f;//6
+	z = -10.0f;//-45
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//Planta2//planta2.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Planta2//Plants_Texture.png").
+		Build());
+
+	x = -15.0f;
+	z = -22.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//Planta3//planta3.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Planta3//Plants_Texture.png").
+		Build());
+
+	x = -20.0f;
+	z = 4.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//Planta4//planta4.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Planta4//Plants_Texture.png").
+		Build());
+
+
+	x = 8.0f;
+	z = -36.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//plants//Planta5//planta5.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//plants//Planta5//Plants_Texture.png").
+		Build());
 
 	x = 18.0f;
 	z = 8.0f;
