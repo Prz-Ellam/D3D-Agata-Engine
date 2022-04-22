@@ -255,6 +255,17 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//toilet//toilet.png").
 		Build());
+	
+	x = 20.0f;
+	z = -11.0f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//campfire//campfire.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//campfire//barkTexture_COLOR.png").
+		NormalTexture("Assets//Models//campfire//barkTexture_NRM.png").
+		Build());
 
 	x = -2.7f;
 	z = 0.8f;
