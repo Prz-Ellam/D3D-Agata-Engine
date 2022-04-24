@@ -99,7 +99,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +119,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +139,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,7 +159,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Renderer;$(ProjectDir)Scene;$(ProjectDir)FarmingPlay;$(ProjectDir)Window;$(ProjectDir);$(SolutionDir)Dependencies\Assimp\$(Platform)\include;$(SolutionDir)Dependencies\stb\;$(ProjectDir)Utils;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

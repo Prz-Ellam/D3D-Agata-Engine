@@ -217,6 +217,12 @@ namespace Agata {
 
 	}
 
+	void Camera::Back() {
+
+		m_Position = m_PrevPosition;
+
+	}
+
 	void Camera::ChangePitchDirection() {
 
 		m_Pitch = -m_Pitch;

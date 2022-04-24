@@ -62,7 +62,7 @@ void Scene3D::OnInit() {
 	m_StaticModelShader->Bind();
 
 	float x, z;
-	x = 0.0f;
+	x = 10.0f;
 	z = 0.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Casa 1//rural1.obj").
@@ -71,6 +71,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 1//diff.png").
 		NormalTexture("Assets//Models//Casa 1//norm.png").
+		DefaultCollider(true).
 		Build());
 
 	x = 10.0f;
@@ -82,6 +83,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 2//diffuse.png").
 		NormalTexture("Assets//Models//Casa 2//normal.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -10.0f;
@@ -113,6 +115,9 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 3//House4_lambert1_AlbedoTransparency.png").
 		NormalTexture("Assets//Models//Casa 3//House4_lambert1_Normal.png").
+		AddCollider("Assets//Colliders//Casa3_1.aabb").
+		AddCollider("Assets//Colliders//Casa3_2.aabb").
+		AddCollider("Assets//Colliders//Casa3_3.aabb").
 		Build());
 
 	x = -17.0f;
@@ -123,6 +128,9 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//church//chiesa_Base_Color.jpg").
+		AddCollider("Assets//Colliders//Church_1.aabb").
+		AddCollider("Assets//Colliders//Church_2.aabb").
+		AddCollider("Assets//Colliders//Church_3.aabb").
 		Build());
 
 	x = 5.0f;
@@ -133,6 +141,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Table//DefaultMaterial_Base_Color.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -15.0f;
@@ -143,6 +152,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//kiosk//3.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -45.0f;
@@ -336,6 +346,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -18.0f;
@@ -346,6 +357,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -15.0f;
@@ -356,6 +368,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Stand//FoodStand_Base_Color.png").
+		DefaultCollider(true).
 		Build());
 
 	x = 22.0f;
@@ -366,6 +379,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//toilet//toilet.png").
+		DefaultCollider(true).
 		Build());
 	
 	x = 20.0f;
@@ -379,7 +393,7 @@ void Scene3D::OnInit() {
 		NormalTexture("Assets//Models//campfire//barkTexture_NRM.png").
 		Build());
 
-	x = -2.7f;
+	x = 10-2.7f;
 	z = 0.8f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Cuadro//Cuadro.obj").
@@ -387,6 +401,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Cuadro//texture.jpg").
+		DefaultCollider(true).
 		Build());
 
 	
@@ -534,6 +549,11 @@ void Scene3D::OnRun() {
 
 void Scene3D::Update() {
 
+	m_Window->SetTitle(
+		"X: " + std::to_string(m_Camera->GetPosition().x) + ", " + 
+		"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
+		"Z: " + std::to_string(m_Camera->GetPosition().z));
+
 	float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
 	float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
 
@@ -541,6 +561,10 @@ void Scene3D::Update() {
 	m_Light->SetPositionZ(z);
 	
 	m_Camera->Move(m_Dt);
+
+	for (auto& model : m_Models) {
+		model->CheckCollision(m_Camera);
+	}
 	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
 	m_Camera->Update(m_Terrain);
 	m_Skybox->OnUpdate(m_Dt);
@@ -549,6 +573,8 @@ void Scene3D::Update() {
 
 	m_Tree1->OnUpdate(m_Dt);
 	m_Tree2->OnUpdate(m_Dt);
+
+
 
 	//m_Vehicle->FollowCamera(m_Camera);
 

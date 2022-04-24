@@ -73,6 +73,92 @@ namespace Agata {
 		return std::make_shared<Mesh>(vertices, indices);
 	}
 
+	std::shared_ptr<Mesh> Loader::LoadStaticModel(const std::string& path, BoxCollider& collider) {
+
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate |
+			aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);;
+
+		if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+			return nullptr;
+		}
+
+		aiMesh* mesh = scene->mMeshes[0];
+
+		std::vector<Vertex> vertices;
+		vertices.reserve(mesh->mNumVertices);
+
+		aiVector3D tempMin, tempMax;
+		tempMin.x = mesh->mVertices[0].x / 39.3701;
+		tempMin.y = mesh->mVertices[0].y / 39.3701;
+		tempMin.z = mesh->mVertices[0].z / 39.3701;
+		tempMax = tempMin;
+
+		for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
+
+			aiVector3D& aiVertex = mesh->mVertices[i];
+			aiVector3D& aiTexCoord = mesh->mTextureCoords[0][i];
+			aiVector3D& aiNormal = mesh->mNormals[i];
+			aiVector3D& aiTangent = mesh->mTangents[i];
+			aiVector3D& aiBitangent = mesh->mBitangents[i];
+			Vertex vertex;
+
+			vertex.pos.x = aiVertex.x / 39.3701;
+			vertex.pos.y = aiVertex.y / 39.3701;
+			vertex.pos.z = aiVertex.z / 39.3701;
+			vertex.uv.x = aiTexCoord.x;
+			vertex.uv.y = aiTexCoord.y;
+			vertex.normal.x = aiNormal.x;
+			vertex.normal.y = aiNormal.y;
+			vertex.normal.z = aiNormal.z;
+			vertex.tangent.x = aiTangent.x;
+			vertex.tangent.y = aiTangent.y;
+			vertex.tangent.z = aiTangent.z;
+			vertex.bitangent.x = aiBitangent.x;
+			vertex.bitangent.y = aiBitangent.y;
+			vertex.bitangent.z = aiBitangent.z;
+
+			vertices.emplace_back(vertex);
+
+			if (vertex.pos.x < tempMin.x) {
+				tempMin.x = vertex.pos.x;
+			}
+			if (vertex.pos.y < tempMin.y) {
+				tempMin.y = vertex.pos.y;
+			}
+			if (vertex.pos.z < tempMin.z) {
+				tempMin.z = vertex.pos.z;
+			}
+			if (vertex.pos.x > tempMax.x) {
+				tempMax.x = vertex.pos.x;
+			}
+			if (vertex.pos.y > tempMax.y) {
+				tempMax.y = vertex.pos.y;
+			}
+			if (vertex.pos.z > tempMax.z) {
+				tempMax.z = vertex.pos.z;
+			}
+
+		}
+
+		std::vector<UINT> indices;
+		indices.reserve(mesh->mNumFaces * 3ll);
+
+		for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
+
+			aiFace& face = mesh->mFaces[i];
+			indices.emplace_back(face.mIndices[0]);
+			indices.emplace_back(face.mIndices[1]);
+			indices.emplace_back(face.mIndices[2]);
+
+		}
+
+		collider.SetAttribs(DX::XMFLOAT3(tempMin.x, tempMin.y, tempMin.z), 
+			DX::XMFLOAT3(tempMax.x, tempMax.y, tempMax.z));
+		return std::make_shared<Mesh>(vertices, indices);
+
+	}
+
 	std::shared_ptr<Mesh> Loader::LoadSkeletalModel(const std::string& path) {
 
 		SkeletalModelProps props;

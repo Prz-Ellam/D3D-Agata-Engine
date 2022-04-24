@@ -4,6 +4,7 @@
 
 #include <string>
 #include "Mesh.h"
+#include "BoxCollider.h"
 #include <tuple>
 #include <DirectXMath.h>
 #undef min
@@ -44,6 +45,7 @@ namespace Agata {
 		static Loader& Get();
 
 		std::shared_ptr<Mesh> LoadStaticModel(const std::string& path);
+		std::shared_ptr<Mesh> LoadStaticModel(const std::string& filePath, BoxCollider& collider);
 		std::shared_ptr<Mesh> LoadSkeletalModel(const std::string& path);
 		std::pair<std::shared_ptr<Mesh>, TerrainProps> LoadTerrain(TerrainParams& terrainParams);
 		std::shared_ptr<Mesh> LoadSkybox(float size);

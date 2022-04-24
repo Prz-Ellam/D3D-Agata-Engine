@@ -48,8 +48,11 @@ namespace Agata {
 
 	void BoxCollider::SetTransformation(const DX::XMMATRIX& transformation) {
 
-		//m_Min = transformation * DX::XMFLOAT4(m_Min, 1.0f);
-		//m_Max = transformation * DX::XMFLOAT4(m_Max, 1.0f);
+		DX::XMFLOAT4 min = DX::XMFLOAT4(m_Min.x, m_Min.y, m_Min.z, 1.0f);
+		DX::XMFLOAT4 max = DX::XMFLOAT4(m_Max.x, m_Max.y, m_Max.z, 1.0f);
+
+		DX::XMStoreFloat3(&m_Min, DX::XMVector3Transform(DX::XMLoadFloat4(&min), transformation));
+		DX::XMStoreFloat3(&m_Max, DX::XMVector3Transform(DX::XMLoadFloat4(&max), transformation));
 
 	}
 

@@ -5,16 +5,40 @@
 
 namespace Agata {
 
-	StaticModel::StaticModel(const std::string& modelPath, const DX::XMFLOAT3& position, 
+	StaticModel::StaticModel(const std::string& modelPath, const DX::XMFLOAT3& position,
 		const DX::XMFLOAT3& rotation, const DX::XMFLOAT3& scale, const std::string& diffuseTex,
 		const std::string& normalTex, const std::string& specularTex, const DX::XMFLOAT4& ambient,
-		const DX::XMFLOAT4& diffuse, const DX::XMFLOAT4& specular, float specularPower) 
+		const DX::XMFLOAT4& diffuse, const DX::XMFLOAT4& specular, float specularPower,
+		bool defaultCollider, const std::vector<BoxCollider>& colliders)
 		: Drawable(position, rotation, scale), m_Buffer({}) {
+
+		if (defaultCollider) {
+			m_Colliders.clear();
+			m_Colliders.push_back({});
+			m_Mesh = Loader::Get().LoadStaticModel(modelPath, m_Colliders[0]);
+			m_Colliders[0].SetTransformation(m_Transformation);
+		}
+		else {
+			m_Mesh = Loader::Get().LoadStaticModel(modelPath);
+			m_Colliders = colliders;
+			for (auto& collider : m_Colliders) {
+				collider.SetTransformation(m_Transformation);
+			}
+		}
 		
-		m_Mesh = Loader::Get().LoadStaticModel(modelPath);
 		m_CBO = std::make_shared<ConstantBuffer>(&m_Buffer, sizeof(m_Buffer));
 		m_Material = std::make_shared<Material>(diffuseTex, normalTex, specularTex, ambient, 
 			diffuse, specular, specularPower);
+
+	}
+
+	void StaticModel::CheckCollision(std::unique_ptr<Camera>& camera) {
+
+		for (auto& collider : m_Colliders) {
+			if (collider.IsColliding(camera->GetPosition())) {
+				camera->Back();
+			}
+		}
 
 	}
 
@@ -124,11 +148,35 @@ namespace Agata {
 
 	}
 
+	StaticModelBuilder& StaticModelBuilder::DefaultCollider(bool defaultCollider) {
+
+		m_DefaultCollider = defaultCollider;
+		return *this;
+
+	}
+
+	StaticModelBuilder& StaticModelBuilder::AddCollider(const BoxCollider& collider) {
+
+		m_BoxCollider.push_back(collider);
+		collidersCount++;
+		return *this;
+
+	}
+
+	StaticModelBuilder& StaticModelBuilder::AddCollider(const std::string& filePath) {
+
+		m_BoxCollider.push_back({});
+		m_BoxCollider[collidersCount].SetAttribs(filePath);
+		collidersCount++;
+		return *this;
+
+	}
+
 	std::shared_ptr<StaticModel> StaticModelBuilder::Build() {
 
 		return std::make_shared<StaticModel>(m_ModelPath, m_Position, m_Rotation, m_Scale, 
 			m_DiffuseTexture, m_NormalTexture, m_SpecularTexture, m_AmbientMaterial, m_DiffuseMaterial,
-			m_SpecularMaterial, m_SpecularPowerMaterial);
+			m_SpecularMaterial, m_SpecularPowerMaterial, m_DefaultCollider, m_BoxCollider);
 
 	}
 

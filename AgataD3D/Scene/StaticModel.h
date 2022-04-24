@@ -4,6 +4,7 @@
 
 #include "ConstantBuffer.h"
 #include "Mesh.h"
+#include "BoxCollider.h"
 #include "Drawable.h"
 #include "Material.h"
 
@@ -26,10 +27,13 @@ namespace Agata {
 		StaticModel(const std::string& modelPath, const DX::XMFLOAT3& position, 
 			const DX::XMFLOAT3& rotation, const DX::XMFLOAT3& scale, const std::string& diffuseTex,
 			const std::string& normalTex, const std::string& specularTex, const DX::XMFLOAT4& ambient,
-			const DX::XMFLOAT4& diffuse, const DX::XMFLOAT4& specular, float specularPower);
+			const DX::XMFLOAT4& diffuse, const DX::XMFLOAT4& specular, float specularPower,
+			bool defaultCollider, const std::vector<BoxCollider>&  collider);
 		StaticModel(const StaticModel& other) = default;
 		StaticModel(StaticModel&& other) noexcept = default;
 		virtual ~StaticModel() = default;
+
+		void CheckCollision(std::unique_ptr<Camera>& camera);
 
 		StaticModel& operator=(const StaticModel& other) = default;
 		StaticModel& operator=(StaticModel&& other) noexcept = default;
@@ -41,6 +45,7 @@ namespace Agata {
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<ConstantBuffer> m_CBO;
 		StaticModelBuffer m_Buffer;
+		std::vector<BoxCollider> m_Colliders;
 	};
 
 	class StaticModelBuilder {
@@ -60,12 +65,9 @@ namespace Agata {
 		StaticModelBuilder& DiffuseMaterial(const DX::XMFLOAT4& diffuse);
 		StaticModelBuilder& SpecularMaterial(const DX::XMFLOAT4& specular);
 		StaticModelBuilder& SpecularPowerMaterial(float specularPower);
-		/*ModelBuilder& DefaultCollider(bool);
-		ModelBuilder& Collider(const BoxCollider&);
-		ModelBuilder& Collider(const std::string&);
-		StaticModelBuilder Build();
-		Model* BuildNew();
-		*/
+		StaticModelBuilder& DefaultCollider(bool);
+		StaticModelBuilder& AddCollider(const BoxCollider&);
+		StaticModelBuilder& AddCollider(const std::string&);
 		std::shared_ptr<StaticModel> Build();
 	private:
 		std::string m_ModelPath;
@@ -79,9 +81,9 @@ namespace Agata {
 		DX::XMFLOAT4 m_DiffuseMaterial = DX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		DX::XMFLOAT4 m_SpecularMaterial = DX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		float m_SpecularPowerMaterial = 32;
-
-		//bool defaultCollider = false;
-		//BoxCollider boxCollider;
+		bool m_DefaultCollider = false;
+		std::vector<BoxCollider> m_BoxCollider;
+		int collidersCount = 0;
 	};
 
 }

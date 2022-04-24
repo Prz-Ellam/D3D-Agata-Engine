@@ -60,6 +60,8 @@ namespace Agata {
 		void MoveHeight(float height);
 		void ChangePitchDirection();
 
+		void Back();
+
 		DirectX::XMMATRIX GetView() const;
 		DirectX::XMMATRIX GetProjection() const;
 
