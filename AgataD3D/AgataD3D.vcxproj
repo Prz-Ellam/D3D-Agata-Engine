@@ -179,6 +179,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Physics\BoxCollider.cpp" />
     <ClCompile Include="Renderer\BufferLayout.cpp" />
     <ClCompile Include="Renderer\ConstantBuffer.cpp" />
     <ClCompile Include="Renderer\Drawable.cpp" />
@@ -218,6 +219,7 @@
   <ItemGroup>
     <ClInclude Include="FarmingPlay\Scene3D.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Physics\BoxCollider.h" />
     <ClInclude Include="Renderer\BufferLayout.h" />
     <ClInclude Include="Renderer\ConstantBuffer.h" />
     <ClInclude Include="Renderer\Drawable.h" />
