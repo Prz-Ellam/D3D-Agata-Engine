@@ -17,6 +17,7 @@ namespace Agata {
 	class Mesh {
 	public:
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<UINT>& indices);
+		Mesh(const std::vector<AnimVertex>& vertices, const std::vector<UINT>& indices);
 		Mesh(const std::vector<DX::XMFLOAT3>& vertices, const std::vector<UINT>& indices);
 		virtual ~Mesh();
 		uint32_t GetVertexCount() const;

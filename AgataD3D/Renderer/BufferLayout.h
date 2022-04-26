@@ -30,6 +30,16 @@ namespace Agata {
 		DirectX::XMFLOAT3 bitangent;
 	};
 
+	struct AnimVertex {
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT3 tangent;
+		DirectX::XMFLOAT3 bitangent;
+		DirectX::XMFLOAT4 joints;
+		DirectX::XMFLOAT4 weights;
+	};
+
 	class BufferLayout {
 	public:
 		BufferLayout(const std::string& name, uint32_t index, DataType type);

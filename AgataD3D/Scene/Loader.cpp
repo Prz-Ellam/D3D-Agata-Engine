@@ -2,6 +2,7 @@
 #include "Loader.h"
 #include <stb/stb_image.h>
 #include "InputLayout.h"
+#include "MathUtils.h"
 
 namespace DX = DirectX;
 
@@ -156,35 +157,6 @@ namespace Agata {
 		collider.SetAttribs(DX::XMFLOAT3(tempMin.x, tempMin.y, tempMin.z), 
 			DX::XMFLOAT3(tempMax.x, tempMax.y, tempMax.z));
 		return std::make_shared<Mesh>(vertices, indices);
-
-	}
-
-	std::shared_ptr<Mesh> Loader::LoadSkeletalModel(const std::string& path) {
-
-		SkeletalModelProps props;
-
-		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate |
-			aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);;
-
-		if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-			return nullptr;
-		}
-
-		if (scene->mAnimations[0]->mTicksPerSecond != 0.0) {
-			props.TicksPerSec = scene->mAnimations[0]->mTicksPerSecond;
-		}
-		else {
-			props.TicksPerSec = 25.0f;
-		}
-
-		ProcessNode(scene, scene->mRootNode);
-
-		const aiAnimation* animation = scene->mAnimations[0];
-		for (int i = 0; i < animation->mNumChannels; i++) {
-			const aiNodeAnim* nodeAnim = animation->mChannels[i];
-			//animationInfo[nodeAnim->mNodeName.C_Str()] = nodeAnim;
-		}
 
 	}
 
@@ -406,10 +378,6 @@ namespace Agata {
 		indices[5] = 0;
 
 		return std::make_shared<Mesh>(vertices, indices);
-
-	}
-
-	void Loader::ProcessNode(const aiScene* scene, aiNode* node) {
 
 	}
 

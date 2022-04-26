@@ -16,6 +16,7 @@
 #include "Fire.h"
 #include "DirectionLight.h"
 #include "Zoom.h"
+#include "SkeletalModel.h"
 
 namespace DX = DirectX;
 

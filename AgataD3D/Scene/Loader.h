@@ -30,7 +30,14 @@ namespace Agata {
 	};
 
 	struct SkeletalModelProps {
+		aiScene Scene;
+		std::vector<Mesh> Meshes;
+		std::map<std::string, uint32_t> JointInfo;
+		std::vector< std::pair<DirectX::XMMATRIX, DirectX::XMMATRIX>> JointTransformations;
+		DirectX::XMMATRIX GlobalInverseTransformation;
+		std::map<std::string, aiNodeAnim> AnimationInfo;
 		float TicksPerSec;
+		uint32_t JointCount = 0;
 	};
 
 	class Loader {
@@ -46,7 +53,6 @@ namespace Agata {
 
 		std::shared_ptr<Mesh> LoadStaticModel(const std::string& path);
 		std::shared_ptr<Mesh> LoadStaticModel(const std::string& filePath, BoxCollider& collider);
-		std::shared_ptr<Mesh> LoadSkeletalModel(const std::string& path);
 		std::pair<std::shared_ptr<Mesh>, TerrainProps> LoadTerrain(TerrainParams& terrainParams);
 		std::shared_ptr<Mesh> LoadSkybox(float size);
 		std::shared_ptr<Mesh> LoadQuad();
@@ -54,7 +60,6 @@ namespace Agata {
 
 		DirectX::XMFLOAT3 GetNormals(int x, int y, int length, int width, int height, uint8_t* data);
 		float GetHeight(int x, int z, int length, int width, int height, uint8_t* data);
-		void ProcessNode(const aiScene* scene, aiNode* node);
 	private:
 		Loader() = default;
 		static Loader s_Instance;

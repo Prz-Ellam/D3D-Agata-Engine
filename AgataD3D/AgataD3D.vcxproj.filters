@@ -290,5 +290,7 @@
     <FxCompile Include="Assets\Shaders\FirePixel.hlsl" />
     <FxCompile Include="Assets\Shaders\ZoomVertex.hlsl" />
     <FxCompile Include="Assets\Shaders\ZoomPixel.hlsl" />
+    <FxCompile Include="Assets\Shaders\SkeletalModelVertex.hlsl" />
+    <FxCompile Include="Assets\Shaders\SkeletalModelPixel.hlsl" />
   </ItemGroup>
 </Project>

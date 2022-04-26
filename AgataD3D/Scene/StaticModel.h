@@ -74,9 +74,9 @@ namespace Agata {
 		std::string m_DiffuseTexture;
 		std::string m_SpecularTexture;
 		std::string m_NormalTexture;
-		DX::XMFLOAT3 m_Position;
-		DX::XMFLOAT3 m_Rotation;
-		DX::XMFLOAT3 m_Scale;
+		DX::XMFLOAT3 m_Position = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+		DX::XMFLOAT3 m_Rotation = DX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+		DX::XMFLOAT3 m_Scale = DX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		DX::XMFLOAT4 m_AmbientMaterial = DX::XMFLOAT4(0.15f, 0.15f, 0.15f, 0.15f);
 		DX::XMFLOAT4 m_DiffuseMaterial = DX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		DX::XMFLOAT4 m_SpecularMaterial = DX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

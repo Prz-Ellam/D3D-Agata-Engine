@@ -3,6 +3,7 @@
 
 #include "Joystick.h"
 
+
 float lerp(float a, float b, float t) {
 	return a + t * (b - a);
 }
@@ -58,10 +59,26 @@ void Scene3D::OnInit() {
 		.TilingFactor(40.0f)
 		.Build();
 
+	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
+	m_SkeletalModelShader->Bind();
+
+	float x, z;
+	x = 0.0f;
+	z = 0.0f;
+	m_SkeletalModel = Agata::SkeletalModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Personaje//Forward.fbx").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
+		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
+		//NormalTexture("Assets//Models//Casa 1//norm.png").
+		Build();
+
+
+
 	m_StaticModelShader = std::make_shared<Agata::Shader>("StaticModelVertex.cso", "StaticModelPixel.cso");
 	m_StaticModelShader->Bind();
 
-	float x, z;
 	x = 10.0f;
 	z = 0.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -94,6 +111,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Telescopio//albedo.png").
+		NormalTexture("Assets//Models//Telescopio//normal.png").
 		Build());
 
 	x = 10.0f;
@@ -413,6 +431,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Wood_002.png").
+		NormalTexture("Assets//Models//Arbol//Wood_002_normal.tga.png").
 		Build());
 
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -421,6 +440,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Bitmap2Material_3_Base_Color.tga.png").
+		NormalTexture("Assets//Models//Arbol//Bitmap2Material_3_Normal.tga.png").
 		Build());
 	
 
@@ -526,6 +546,7 @@ void Scene3D::OnRun() {
 
 		m_Timer.Stop();
 		m_Dt = m_Timer.GetMiliseconds();
+		m_Ts += m_Dt;
 
 		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
@@ -573,6 +594,8 @@ void Scene3D::Update() {
 
 	m_Tree1->OnUpdate(m_Dt);
 	m_Tree2->OnUpdate(m_Dt);
+
+	m_SkeletalModel->OnUpdate(m_Ts);
 
 
 
@@ -761,5 +784,8 @@ void Scene3D::RenderScene() {
 
 	m_FireShader->Bind();
 	m_Fire->OnRender();
+
+	m_SkeletalModelShader->Bind();
+	m_SkeletalModel->OnRender();
 
 }

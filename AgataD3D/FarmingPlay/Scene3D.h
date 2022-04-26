@@ -28,7 +28,7 @@ public:
 private:
 	bool m_Running;
 	Agata::Timer m_Timer;
-	double m_Dt;
+	double m_Dt, m_Ts = 0.0f;
 	double m_Cycle;
 
 	Agata::Framebuffer* m_FBO;
@@ -36,6 +36,7 @@ private:
 	std::unique_ptr<Agata::Camera> m_Camera;
 
 	std::shared_ptr<Agata::StaticModel> m_Vehicle;
+	std::shared_ptr<Agata::SkeletalModel> m_SkeletalModel;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
 
@@ -47,6 +48,7 @@ private:
 	std::shared_ptr<Agata::Fire> m_Fire;
 
 	std::shared_ptr<Agata::Shader> m_StaticModelShader;
+	std::shared_ptr<Agata::Shader> m_SkeletalModelShader;
 	std::shared_ptr<Agata::Shader> m_TerrainShader;
 	std::shared_ptr<Agata::Shader> m_SkyboxShader;
 	std::shared_ptr<Agata::Shader> m_QuadShader;
