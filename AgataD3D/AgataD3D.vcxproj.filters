@@ -132,6 +132,9 @@
     <ClCompile Include="Physics\BoxCollider.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\GUI.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Events\CharEvent.h">
@@ -272,6 +275,9 @@
     <ClInclude Include="Physics\BoxCollider.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\GUI.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shaders\TerrainVertex.hlsl" />
@@ -292,5 +298,7 @@
     <FxCompile Include="Assets\Shaders\ZoomPixel.hlsl" />
     <FxCompile Include="Assets\Shaders\SkeletalModelVertex.hlsl" />
     <FxCompile Include="Assets\Shaders\SkeletalModelPixel.hlsl" />
+    <FxCompile Include="Assets\Shaders\GUIVertex.hlsl" />
+    <FxCompile Include="Assets\Shaders\GUIPixel.hlsl" />
   </ItemGroup>
 </Project>

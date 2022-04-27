@@ -56,9 +56,11 @@ private:
 	std::shared_ptr<Agata::Shader> m_BillboardShader;
 	std::shared_ptr<Agata::Shader> m_FireShader;
 	std::shared_ptr<Agata::Shader> m_ZoomShader;
+	std::shared_ptr<Agata::Shader> m_GUIShader;
 
 	std::shared_ptr<Agata::Quad> m_Quad;
 	std::shared_ptr<Agata::Zoom> m_SpyGlass;
+	std::shared_ptr<Agata::GUI> m_GUI;
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;
 

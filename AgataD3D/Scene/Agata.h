@@ -17,6 +17,7 @@
 #include "DirectionLight.h"
 #include "Zoom.h"
 #include "SkeletalModel.h"
+#include "GUI.h"
 
 namespace DX = DirectX;
 

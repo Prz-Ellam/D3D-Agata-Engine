@@ -59,6 +59,13 @@ void Scene3D::OnInit() {
 		.TilingFactor(40.0f)
 		.Build();
 
+
+	m_GUIShader = std::make_shared<Agata::Shader>("GUIVertex.cso", "GUIPixel.cso");
+	m_GUIShader->Bind();
+
+	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//win.png", 1, 1);
+
+
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
 	m_SkeletalModelShader->Bind();
 
@@ -716,6 +723,9 @@ void Scene3D::Render() {
 		m_ZoomShader->Bind();
 		m_SpyGlass->OnRender();
 	}
+
+	m_GUIShader->Bind();
+	m_GUI->OnRender();
 
 	//m_FBO->UnbindFramebuffer();
 
