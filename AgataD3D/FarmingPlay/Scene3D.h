@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Agata.h"
+#include <future>
+#include <thread>
 
 class Scene3D : public Agata::Scene {
 public:

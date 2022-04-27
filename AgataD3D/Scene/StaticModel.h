@@ -21,6 +21,13 @@ namespace Agata {
 		DX::XMFLOAT4 c_LightColour;
 	};
 
+	HLSL struct StaticModelBuffer2 {
+		DX::XMFLOAT4 c_AmbientMaterial;
+		DX::XMFLOAT4 c_DiffuseMaterial;
+		DX::XMFLOAT4 c_SpecularMaterial;
+		FLOAT c_Shininess;
+	};
+
 	class StaticModel : public Drawable {
 	public:
 		StaticModel() = default;
@@ -38,13 +45,18 @@ namespace Agata {
 		StaticModel& operator=(const StaticModel& other) = default;
 		StaticModel& operator=(StaticModel&& other) noexcept = default;
 
+		std::shared_ptr<Material>& GetMaterial();
+
 		void OnRender() override;
 
 	private:
 		std::shared_ptr<Mesh> m_Mesh;
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<ConstantBuffer> m_CBO;
+		std::shared_ptr<ConstantBuffer> m_CBO2;
 		StaticModelBuffer m_Buffer;
+		StaticModelBuffer2 m_Buffer2;
+
 		std::vector<BoxCollider> m_Colliders;
 	};
 

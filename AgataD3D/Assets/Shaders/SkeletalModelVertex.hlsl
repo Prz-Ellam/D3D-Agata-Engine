@@ -35,7 +35,7 @@ PSInput main(VSInput input) {
 		{ 0, 1, 0, 0 },
 		{ 0, 0, 1, 0 },
 		{ 0, 0, 0, 1 } };
-	 boneTransform = c_Joints[input.joint.x] * input.weight.x;
+	boneTransform = c_Joints[input.joint.x] * input.weight.x;
 	boneTransform += c_Joints[input.joint.y] * input.weight.y;
 	boneTransform += c_Joints[input.joint.z] * input.weight.z;
 	boneTransform += c_Joints[input.joint.w] * input.weight.w;
@@ -47,6 +47,18 @@ PSInput main(VSInput input) {
 	output.pos = mul(output.pos, c_View);
 	output.pos = mul(output.pos, c_Projection);
 	output.uv = input.uv;
+
+	output.normal = input.normal;
+	output.lightColour = c_LightColour;
+
+	float3 T = normalize(mul(c_Model, float4(input.tangent, 0.0f)).xyz);
+	float3 N = normalize(mul(c_Model, float4(input.normal, 0.0f)).xyz);
+	T = normalize(T - dot(T, N) * N);
+	float3 B = normalize(mul(c_Model, float4(input.bitangent, 0.0f)).xyz);
+	float3x3 TBN = transpose(float3x3(T, B, N));
+
+	output.toLightVector = mul(normalize(c_LightPosition - worldPos.xyz), TBN);
+	output.toCameraVector = mul(normalize(c_CameraPosition - worldPos.xyz), TBN);
 
 	return output;
 

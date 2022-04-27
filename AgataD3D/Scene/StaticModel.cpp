@@ -10,7 +10,7 @@ namespace Agata {
 		const std::string& normalTex, const std::string& specularTex, const DX::XMFLOAT4& ambient,
 		const DX::XMFLOAT4& diffuse, const DX::XMFLOAT4& specular, float specularPower,
 		bool defaultCollider, const std::vector<BoxCollider>& colliders)
-		: Drawable(position, rotation, scale), m_Buffer({}) {
+		: Drawable(position, rotation, scale), m_Buffer({}), m_Buffer2({}) {
 
 		if (defaultCollider) {
 			m_Colliders.clear();
@@ -27,6 +27,7 @@ namespace Agata {
 		}
 		
 		m_CBO = std::make_shared<ConstantBuffer>(&m_Buffer, sizeof(m_Buffer));
+		m_CBO2 = std::make_shared<ConstantBuffer>(&m_Buffer2, sizeof(m_Buffer2));
 		m_Material = std::make_shared<Material>(diffuseTex, normalTex, specularTex, ambient, 
 			diffuse, specular, specularPower);
 
@@ -54,10 +55,23 @@ namespace Agata {
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
 
+		m_Buffer2.c_AmbientMaterial = m_Material->GetAmbient();
+		m_Buffer2.c_DiffuseMaterial = m_Material->GetDiffuse();
+		m_Buffer2.c_SpecularMaterial = m_Material->GetSpecular();
+		m_Buffer2.c_Shininess = m_Material->GetShininess();
+		m_CBO2->BindPS(1);
+		m_CBO2->UpdateData(&m_Buffer2);
+
 		m_Material->BindDiffuseTexture(0);
 		m_Material->BindNormalTexture(1);
 
 		Renderer::DrawIndexes(m_Mesh.get());
+
+	}
+
+	std::shared_ptr<Material>& StaticModel::GetMaterial() {
+
+		return m_Material;
 
 	}
 

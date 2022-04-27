@@ -42,8 +42,9 @@ PSInput main(VSInput vsInput) {
 	psInput.lightColour = c_LightColour;
 
 	float3 T = normalize(mul(c_Model, float4(vsInput.tangent, 0.0f)).xyz);
-	float3 B = normalize(mul(c_Model, float4(vsInput.bitangent, 0.0f)).xyz);
 	float3 N = normalize(mul(c_Model, float4(vsInput.normal, 0.0f)).xyz);
+	T = normalize(T - dot(T, N) * N);
+	float3 B = normalize(mul(c_Model, float4(vsInput.bitangent, 0.0f)).xyz);
 	float3x3 TBN = transpose(float3x3(T, B, N));
 
 	psInput.toLightVector = mul(normalize(c_LightPosition - worldPos.xyz), TBN);

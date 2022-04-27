@@ -15,7 +15,8 @@ namespace Agata {
 
 		void UpdateData(const void* data);
 
-		void Bind() const;
+		void Bind(uint32_t slot = 0) const;
+		void BindPS(uint32_t slot = 0) const;
 	private:
 		ID3D11Buffer* m_ID;
 		size_t m_ByteSize;

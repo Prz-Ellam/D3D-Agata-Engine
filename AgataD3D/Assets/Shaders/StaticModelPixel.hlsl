@@ -7,6 +7,13 @@ struct PSInput {
 	float4 lightColour : LIGHTCOLOUR;
 };
 
+cbuffer PS_CB : register(b1) {
+	float4 c_AmbientMaterial;
+	float4 c_DiffuseMaterial;
+	float4 c_SpecularMaterial;
+	float c_Shininess;
+}
+
 Texture2D tex : register(t0);
 Texture2D t_NormalMap : register(t1);
 SamplerState samplerX : register(s0);
@@ -21,11 +28,14 @@ float4 main(PSInput input) : SV_TARGET {
 	float4 texColour = tex.Sample(samplerX, input.uv);
 
 
-	// Ambien Light
-	float3 ambient = input.lightColour.xyz;
+	// Ambient Light
+	float3 ambient = input.lightColour.xyz * c_AmbientMaterial.xyz;
 
 
 	//float3 unitNormal = normalize(input.normal);
+
+
+
 
 	// Diffuse Light
 	float diffuseScalar = dot(unitNormal, normalize(input.toLightVector));

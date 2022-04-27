@@ -45,9 +45,15 @@ namespace Agata {
 
 	}
 
-	void ConstantBuffer::Bind() const {
+	void ConstantBuffer::Bind(uint32_t slot) const {
 
-		Renderer::GetDeviceContext()->VSSetConstantBuffers(0, 1, &m_ID);
+		Renderer::GetDeviceContext()->VSSetConstantBuffers(slot, 1, &m_ID);
+
+	}
+
+	void ConstantBuffer::BindPS(uint32_t slot) const {
+
+		Renderer::GetDeviceContext()->PSSetConstantBuffers(slot, 1, &m_ID);
 
 	}
 

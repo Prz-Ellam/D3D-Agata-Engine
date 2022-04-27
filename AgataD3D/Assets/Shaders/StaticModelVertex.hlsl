@@ -36,6 +36,11 @@ PSInput main(VSInput input) {
 
 	output.normal = input.normal;
 	output.lightColour = c_LightColour;
+
+	//output.normal = normalize(mul(input.normal, (float3x3)c_Model));
+	//output.tangent = normalize(mul(input.tangent, (float3x3)c_Model));
+	//output.bitangent = normalize(mul(input.bitangent, (float3x3)c_Model));
+
 	/*
 	float3x3 normalMatrix = transpose(inverse((c_Model)));
 	float3 T = normalize(normalMatrix * a_Tangents);
@@ -44,9 +49,11 @@ PSInput main(VSInput input) {
 	float3 B = normalize(normalMatrix * a_Bitangents);
 	float3x3 TBN = transpose(mat3(T, B, N));
 	*/
+
 	float3 T = normalize(mul(c_Model, float4(input.tangent, 0.0f)).xyz);
-	float3 B = normalize(mul(c_Model, float4(input.bitangent, 0.0f)).xyz);
 	float3 N = normalize(mul(c_Model, float4(input.normal, 0.0f)).xyz);
+	T = normalize(T - dot(T, N) * N);
+	float3 B = normalize(mul(c_Model, float4(input.bitangent, 0.0f)).xyz);
 	float3x3 TBN = transpose(float3x3(T, B, N));
 
 	output.toLightVector = mul(normalize(c_LightPosition - worldPos.xyz), TBN);

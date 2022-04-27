@@ -354,6 +354,7 @@ namespace Agata {
 		m_CBO->UpdateData(&m_Buffer);
 
 		m_Material->BindDiffuseTexture(0);
+		m_Material->BindNormalTexture(1);
 
 		Renderer::DrawIndexes(&m_Meshes[0]);
 

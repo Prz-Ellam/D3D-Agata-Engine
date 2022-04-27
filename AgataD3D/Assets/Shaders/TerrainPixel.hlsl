@@ -72,9 +72,10 @@ float4 main(PSInput input) : SV_TARGET{
 	float2 tileUV = input.uv * input.tiling;
 
 	// Normal Map
-	float4 totalNormal = blendNormal(blend, t_BlackNormal, t_RedNormal, t_GreenNormal, t_BlueNormal, tileUV);
+	float3 totalNormal = blendNormal(blend, t_BlackNormal, t_RedNormal, t_GreenNormal, t_BlueNormal, tileUV);
 	float3 unitNormal = totalNormal.xyz;
 	unitNormal = normalize(2.0f * unitNormal - 1.0f);
+	unitNormal.y *= -1;
 
 	float4 diffuseColor = float4(blendTexture(blend, t_BlackDiffuse, t_RedDiffuse, t_GreenDiffuse, t_BlueDiffuse, tileUV), 1.0f);
 

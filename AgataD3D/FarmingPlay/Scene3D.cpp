@@ -53,7 +53,7 @@ void Scene3D::OnInit() {
 		.BlackTexture("Assets//Images//Terrain//Grass.jpg")
 		.RedNormal("Assets//Images//Terrain//StreetNorm.png")
 		.GreenNormal("Assets//Images//Terrain//SandNorm.png")
-		.BlueNormal("Assets//Images//Terrain//DirtNorm.png")
+		.BlueNormal("Assets//Images//Terrain//DirtNorm.jpg")
 		.BlackNormal("Assets//Images//Terrain//GrassNorm.png")
 		.BlendMap("Assets//Images//Terrain//Splat_Map.png")
 		.TilingFactor(40.0f)
@@ -587,6 +587,13 @@ void Scene3D::Update() {
 
 	m_Light->SetPositionY(y);
 	m_Light->SetPositionZ(z);
+	float I = std::max(0.4f * std::sin(DirectX::XMConvertToRadians(m_Cycle)) + 0.2f, 0.2f) + 0.1f;
+
+	for (auto& model : m_Models) {
+		model->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		model->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	}
+
 	
 	m_Camera->Move(m_Dt);
 
@@ -603,9 +610,9 @@ void Scene3D::Update() {
 	m_Tree2->OnUpdate(m_Dt);
 
 	m_SkeletalModel->OnUpdate(m_Ts);
-	m_SkeletalModel->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-		m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-	m_SkeletalModel->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+	//m_SkeletalModel->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+	//	m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+	//m_SkeletalModel->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
 
 
 	//m_Vehicle->FollowCamera(m_Camera);

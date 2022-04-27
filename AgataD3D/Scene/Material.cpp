@@ -30,7 +30,52 @@ namespace Agata {
 
 	}
 
+	DirectX::XMFLOAT4 Material::GetAmbient() const {
 
+		return m_AmbientMaterial;
 
+	}
+
+	DirectX::XMFLOAT4 Material::GetDiffuse() const {
+
+		return m_DiffuseMaterial;
+
+	}
+
+	DirectX::XMFLOAT4 Material::GetSpecular() const {
+
+		return m_SpecularMaterial;
+
+	}
+
+	float Material::GetShininess() const {
+
+		return m_SpecularPowerMaterial;
+
+	}
+
+	void Material::SetAmbient(DirectX::XMFLOAT4 ambient) {
+
+		m_AmbientMaterial = ambient;
+
+	}
+
+	void Material::SetDiffuse(DirectX::XMFLOAT4 diffuse) {
+
+		m_DiffuseMaterial = diffuse;
+
+	}
+
+	void Material::SetSpecular(DirectX::XMFLOAT4 specular) {
+
+		m_SpecularMaterial = specular;
+
+	}
+
+	void Material::SetShininess(FLOAT shininess) {
+
+		m_SpecularPowerMaterial = shininess;
+
+	}
 
 }

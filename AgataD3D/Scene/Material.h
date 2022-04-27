@@ -16,6 +16,15 @@ namespace Agata {
 		void BindNormalTexture(uint32_t slot);
 		void BindSpecularTexture(uint32_t slot);
 
+		DirectX::XMFLOAT4 GetAmbient() const;
+		DirectX::XMFLOAT4 GetDiffuse() const;
+		DirectX::XMFLOAT4 GetSpecular() const;
+		float GetShininess() const;
+
+		void SetAmbient(DirectX::XMFLOAT4 ambient);
+		void SetDiffuse(DirectX::XMFLOAT4 diffuse);
+		void SetSpecular(DirectX::XMFLOAT4 specular);
+		void SetShininess(FLOAT shininess);
 
 	private:
 		Texture2D m_DiffuseTexture;
