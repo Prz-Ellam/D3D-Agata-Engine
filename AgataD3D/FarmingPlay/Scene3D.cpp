@@ -63,7 +63,7 @@ void Scene3D::OnInit() {
 	m_GUIShader = std::make_shared<Agata::Shader>("GUIVertex.cso", "GUIPixel.cso");
 	m_GUIShader->Bind();
 
-	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//win.png", 1, 1);
+	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//health_full.png", 1, 1);
 
 
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
@@ -603,7 +603,9 @@ void Scene3D::Update() {
 	m_Tree2->OnUpdate(m_Dt);
 
 	m_SkeletalModel->OnUpdate(m_Ts);
-
+	m_SkeletalModel->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+		m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+	m_SkeletalModel->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
 
 
 	//m_Vehicle->FollowCamera(m_Camera);
@@ -724,8 +726,8 @@ void Scene3D::Render() {
 		m_SpyGlass->OnRender();
 	}
 
-	m_GUIShader->Bind();
-	m_GUI->OnRender();
+	//m_GUIShader->Bind();
+	//m_GUI->OnRender();
 
 	//m_FBO->UnbindFramebuffer();
 

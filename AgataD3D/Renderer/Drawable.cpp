@@ -29,18 +29,21 @@ namespace Agata {
 	void Drawable::SetPosition(const DX::XMFLOAT3& position) {
 
 		m_Position = position;
+		m_Transformation = SetMatrix();
 
 	}
 
 	void Drawable::SetRotation(const DX::XMFLOAT3& rotation) {
 
 		m_Rotation = rotation;
+		m_Transformation = SetMatrix();
 
 	}
 
 	void Drawable::SetScale(const DX::XMFLOAT3& scale) {
 
 		m_Scale = scale;
+		m_Transformation = SetMatrix();
 
 	}
 
