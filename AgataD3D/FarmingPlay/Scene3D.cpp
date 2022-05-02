@@ -202,167 +202,167 @@ void Scene3D::OnInit() {
 
 	x = -40.0f;//1
 	z = -33.0f;//-45
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta1 = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta1//planta1.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta1//Plants_Texture.png").
-		Build());
+		Build();
 
 	x = -35.0f;//2
 	z = 25.0f;//-45
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta2 = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta1//planta1.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta1//Plants_Texture.png").
-		Build());
+		Build();
 
 	x = 15.0f;//3
 	z = -10.0f;//-45
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta3=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta2//planta2.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta2//Plants_Texture.png").
-		Build());
+		Build();
 
 	x = -15.0f; //4
 	z = -22.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta4=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta3//planta3.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta3//Plants_Texture.png").
-		Build());
+		Build();
 
 	x = -15.0f; //5
 	z = 25.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta5=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta3//planta3.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta3//Plants_Texture.png").
-		Build());
+		Build();
 
 	x = -20.0f; //6
 	z = 4.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta6=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta4//planta4.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta4//Plants_Texture.png").
-		Build());
+		Build();
 
 
 	x = 8.0f; //7
 	z = -36.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Planta7=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta5//planta5.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta5//Plants_Texture.png").
-		Build());
+		Build();
 	
 	
 	x = 70.0f; //1
 	z = 25.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Llave1=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//llave//llave.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//llave//Checkers_Base_Color.png").
-		Build());
+		Build();
 
 
 	x = 70.0f; //2
 	z = 10.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Llave2=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//llave//llave.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//llave//Checkers_Base_Color.png").
-		Build());
+		Build();
 
 	x = 5.0f;//1
 	z = -45.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca1=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = -15.0f;//2
 	z = 25.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca2=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = -20.0f;//3
 	z = 5.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca3=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = 2.0f; //4
 	z = 10.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca4=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = 2.0f;//5
 	z = -10.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca5=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = -40.0f;//6
 	z = -35.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca6=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
+		Build();
 
 	x = 30.0f; //7
 	z = 20.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tuerca7=Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build());
-
+		Build();
+	
 	x = 18.0f;
 	z = 8.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -796,6 +796,25 @@ void Scene3D::RenderScene() {
 		model->OnRender();
 	}
 	//m_Vehicle->OnRender();
+	
+	m_Planta1->OnRender();
+	m_Planta2->OnRender();
+	m_Planta3->OnRender();
+	m_Planta4->OnRender();
+	m_Planta5->OnRender();
+	m_Planta6->OnRender();
+	m_Planta7->OnRender();
+
+	m_Llave1->OnRender();
+	m_Llave2->OnRender();
+
+	m_Tuerca1->OnRender();
+	m_Tuerca2->OnRender();
+	m_Tuerca3->OnRender();
+	m_Tuerca4->OnRender();
+	m_Tuerca5->OnRender();
+	m_Tuerca6->OnRender();
+	m_Tuerca7->OnRender();
 
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();
