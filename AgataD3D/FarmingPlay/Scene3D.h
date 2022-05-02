@@ -38,6 +38,22 @@ private:
 	std::unique_ptr<Agata::Camera> m_Camera;
 
 	std::shared_ptr<Agata::StaticModel> m_Vehicle;
+	std::shared_ptr<Agata::StaticModel> m_Planta1;
+	std::shared_ptr<Agata::StaticModel> m_Planta2;
+	std::shared_ptr<Agata::StaticModel> m_Planta3;
+	std::shared_ptr<Agata::StaticModel> m_Planta4;
+	std::shared_ptr<Agata::StaticModel> m_Planta5;
+	std::shared_ptr<Agata::StaticModel> m_Planta6;
+	std::shared_ptr<Agata::StaticModel> m_Planta7;
+	std::shared_ptr<Agata::StaticModel> m_Llave1;
+	std::shared_ptr<Agata::StaticModel> m_Llave2;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca1;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca2;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca3;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca4;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca5;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca6;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca7;
 	std::shared_ptr<Agata::SkeletalModel> m_SkeletalModel;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
