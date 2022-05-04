@@ -17,11 +17,16 @@ namespace Agata {
 		LoadSkeletalModel(filePath);
 
 		m_CBO = std::make_shared<ConstantBuffer>(&m_Buffer, sizeof(m_Buffer));
+		m_CBO2 = std::make_shared<ConstantBuffer>(&m_Buffer2, sizeof(m_Buffer2));
 		m_Material = std::make_shared<Material>(diffuseTex, normalTex, specularTex, ambientMaterial, 
 			diffuseMaterial, specularMaterial, shininessMaterial);
 
 	}
 
+	std::shared_ptr<Material>& SkeletalModel::GetMaterial() {
+
+		return m_Material;
+	}
 
 	void SkeletalModel::LoadSkeletalModel(const std::string& path) {
 
@@ -352,6 +357,13 @@ namespace Agata {
 
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
+
+		m_Buffer2.c_AmbientMaterial = m_Material->GetAmbient();
+		m_Buffer2.c_DiffuseMaterial = m_Material->GetDiffuse();
+		m_Buffer2.c_SpecularMaterial = m_Material->GetSpecular();
+		m_Buffer2.c_Shininess = m_Material->GetShininess();
+		m_CBO2->BindPS(1);
+		m_CBO2->UpdateData(&m_Buffer2);
 
 		m_Material->BindDiffuseTexture(0);
 		m_Material->BindNormalTexture(1);

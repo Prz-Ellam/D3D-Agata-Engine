@@ -29,7 +29,12 @@ namespace Agata {
 		DirectX::XMFLOAT3 tangent;
 		DirectX::XMFLOAT3 bitangent;
 	};
-
+	/*
+	struct Vertex {
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+	};
+	*/
 	struct AnimVertex {
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT2 uv;

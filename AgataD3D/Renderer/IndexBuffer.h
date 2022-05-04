@@ -10,10 +10,11 @@ namespace Agata {
 	class IndexBuffer {
 	public:
 		IndexBuffer(const void* data, size_t size);
+		IndexBuffer(size_t size);
 		virtual ~IndexBuffer();
 
 		void Bind() const;
-
+		void SendData(const void* data, size_t size, int64_t offset = 0ll);
 	private:
 		ID3D11Buffer* m_ID;
 	};

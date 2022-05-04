@@ -59,15 +59,21 @@ private:
 	std::shared_ptr<Agata::Shader> m_FireShader;
 	std::shared_ptr<Agata::Shader> m_ZoomShader;
 	std::shared_ptr<Agata::Shader> m_GUIShader;
+	std::shared_ptr<Agata::Shader> m_TextShader;
 
 	std::shared_ptr<Agata::Quad> m_Quad;
 	std::shared_ptr<Agata::Zoom> m_SpyGlass;
+	std::shared_ptr<Agata::GUI> m_VehicleGUI;
 	std::shared_ptr<Agata::GUI> m_GUI;
+	std::shared_ptr<Agata::Text> m_Text;
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;
 
-
+	Agata::BoxCollider m_SpyGlassCollider;
+	Agata::BoxCollider m_VehicleCollider;
 	bool m_IsZoom = false;
+	bool m_SpyGlassArea = false;
+	bool m_VehicleArea = false;
 };
 
 

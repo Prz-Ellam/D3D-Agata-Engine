@@ -63,7 +63,13 @@ void Scene3D::OnInit() {
 	m_GUIShader = std::make_shared<Agata::Shader>("GUIVertex.cso", "GUIPixel.cso");
 	m_GUIShader->Bind();
 
-	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//health_full.png", 1, 1);
+	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Observar.png", 1, 1);
+	m_VehicleGUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Subir.png", 1, 1);
+
+	m_TextShader = std::make_shared<Agata::Shader>("TextVertex.cso", "TextPixel.cso");
+	m_TextShader->Bind();
+
+	m_Text = std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.bmp");
 
 
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
@@ -121,6 +127,10 @@ void Scene3D::OnInit() {
 		NormalTexture("Assets//Models//Telescopio//normal.png").
 		Build());
 
+	DirectX::XMFLOAT3 min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
+	m_SpyGlassCollider = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 4, min.y, min.z - 4),
+		                                DirectX::XMFLOAT3(min.x + 4, min.y, min.z + 4));
+
 	x = 10.0f;
 	z = -20.0f;
 	m_Vehicle = Agata::StaticModelBuilder::GenerateParams().
@@ -130,6 +140,10 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(0.8f, 0.8f, 0.8f)).
 		DiffuseTexture("Assets//Models//Tractor//foto2.jpg").
 		Build();
+
+	min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
+	m_VehicleCollider = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 4, min.y, min.z - 4),
+		                                   DirectX::XMFLOAT3(min.x + 4, min.y, min.z + 4));
 	
 	x = 20.0f;
 	z = -40.0f;
@@ -593,9 +607,24 @@ void Scene3D::Update() {
 		model->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 		model->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	}
-
+	m_SkeletalModel->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_SkeletalModel->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	
 	m_Camera->Move(m_Dt);
+
+	if (m_SpyGlassCollider.IsColliding(m_Camera->GetPosition()) && !m_IsZoom) {
+		m_SpyGlassArea = true;
+	}
+	else {
+		m_SpyGlassArea = false;
+	}
+
+	if (m_VehicleCollider.IsColliding(m_Camera->GetPosition())) {
+		m_VehicleArea = true;
+	}
+	else {
+		m_VehicleArea = false;
+	}
 
 	for (auto& model : m_Models) {
 		model->CheckCollision(m_Camera);
@@ -733,9 +762,19 @@ void Scene3D::Render() {
 		m_SpyGlass->OnRender();
 	}
 
-	//m_GUIShader->Bind();
-	//m_GUI->OnRender();
+	if (m_SpyGlassArea) {
+		m_GUIShader->Bind();
+		m_GUI->OnRender();
+	}
 
+	if (m_VehicleArea) {
+		m_GUIShader->Bind();
+		m_VehicleGUI->OnRender();
+	}
+
+
+	m_TextShader->Bind();
+	m_Text->DrawString(std::to_string(m_Cycle));
 	//m_FBO->UnbindFramebuffer();
 
 	//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
@@ -795,7 +834,7 @@ void Scene3D::RenderScene() {
 	for (auto& model : m_Models) {
 		model->OnRender();
 	}
-	//m_Vehicle->OnRender();
+	m_Vehicle->OnRender();
 
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();

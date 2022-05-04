@@ -56,6 +56,7 @@ namespace Agata {
 		std::pair<std::shared_ptr<Mesh>, TerrainProps> LoadTerrain(TerrainParams& terrainParams);
 		std::shared_ptr<Mesh> LoadSkybox(float size);
 		std::shared_ptr<Mesh> LoadQuad();
+		std::tuple<std::vector<Vertex>, std::vector<UINT>> LoadDynamicQuad();
 		std::shared_ptr<Mesh> LoadHorizontalQuad();
 
 		DirectX::XMFLOAT3 GetNormals(int x, int y, int length, int width, int height, uint8_t* data);

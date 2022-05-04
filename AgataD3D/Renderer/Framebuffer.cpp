@@ -53,6 +53,8 @@ namespace Agata {
 			return;
 		}
 
+		CreateDepthStencilView(width, height);
+
 	}
 
 
@@ -79,6 +81,41 @@ namespace Agata {
 	void Framebuffer::BindTexture(uint32_t slot) {
 
 		Renderer::GetDeviceContext()->PSSetShaderResources(slot, 1u, &m_SRV);
+
+	}
+
+	bool Framebuffer::CreateDepthStencilView(int width, int height) {
+
+		HRESULT hr;
+
+		D3D11_TEXTURE2D_DESC stencilDesc = { 0 };
+		stencilDesc.Width = 1280;
+		stencilDesc.Height = 720;
+		stencilDesc.MipLevels = 1u;
+		stencilDesc.ArraySize = 1u;
+		stencilDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		stencilDesc.SampleDesc.Count = 1u;
+		stencilDesc.SampleDesc.Quality = 0u;
+		stencilDesc.Usage = D3D11_USAGE_DEFAULT;
+		stencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		hr = Renderer::GetDevice()->CreateTexture2D(&stencilDesc, nullptr, &m_DepthStencil);
+
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = { };
+		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+		//dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		dsvDesc.Texture2D.MipSlice = 1u;
+		//dsvDesc.Texture2D.MipSlice = 0u;
+
+		hr = Renderer::GetDevice()->CreateDepthStencilView(m_DepthStencil, &dsvDesc, &m_DepthStencilView);
+
+		if (FAILED(hr)) {
+			return false;
+		}
 
 	}
 

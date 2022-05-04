@@ -21,6 +21,10 @@ namespace Agata {
 		ID3D11Texture2D* m_Buffer;
 		ID3D11RenderTargetView* m_Framebuffer;
 		ID3D11ShaderResourceView* m_SRV;
+		ID3D11DepthStencilView* m_DepthStencilView;
+		ID3D11Texture2D* m_DepthStencil;
+
+		bool CreateDepthStencilView(int width, int height);
 	};
 
 }

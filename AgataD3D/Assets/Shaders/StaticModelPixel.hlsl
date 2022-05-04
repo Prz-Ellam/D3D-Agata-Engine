@@ -40,7 +40,7 @@ float4 main(PSInput input) : SV_TARGET {
 	// Diffuse Light
 	float diffuseScalar = dot(unitNormal, normalize(input.toLightVector));
 	diffuseScalar = max(diffuseScalar, 0.0f);
-	float3 diffuse = diffuseScalar * 0.85 * input.lightColour;
+	float3 diffuse = diffuseScalar * c_DiffuseMaterial * input.lightColour;
 	float4 diffuseColour = tex.Sample(samplerX, input.uv);
 
 
@@ -49,9 +49,9 @@ float4 main(PSInput input) : SV_TARGET {
 	float3 reflectLightDir = reflect(lightDirection, unitNormal);
 	float specularScalar = dot(reflectLightDir, normalize(input.toCameraVector));
 	specularScalar = max(specularScalar, 0.0f);
-	specularScalar = pow(specularScalar, 32);
+	specularScalar = pow(specularScalar, c_Shininess);
 	//float4 specularMap = texture(u_SpecularMap, fs_TexCoords);
-	float4 specular = specularScalar * 1 * input.lightColour;// *vec3(specularMap);
+	float4 specular = specularScalar * c_SpecularMaterial * input.lightColour;// *vec3(specularMap);
 
 
 	clip(texColour.a < 0.5f ? -1 : 1); // Discard in GLSL

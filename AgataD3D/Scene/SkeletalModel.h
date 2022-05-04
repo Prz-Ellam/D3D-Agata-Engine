@@ -26,6 +26,13 @@ namespace Agata {
 		DX::XMMATRIX c_Joints[128];
 	};
 
+	HLSL struct SkeletalModelBuffer2 {
+		DX::XMFLOAT4 c_AmbientMaterial;
+		DX::XMFLOAT4 c_DiffuseMaterial;
+		DX::XMFLOAT4 c_SpecularMaterial;
+		FLOAT c_Shininess;
+	};
+
 	class SkeletalModel : public Drawable {
 	public:
 		SkeletalModel() = default;
@@ -44,11 +51,15 @@ namespace Agata {
 
 		void OnUpdate(float dt);
 		void OnRender() override;
+
+		std::shared_ptr<Material>& GetMaterial();
 	private:
 		//SkeletalModelProps m_Properties;
 		std::shared_ptr<Material> m_Material;
 		std::shared_ptr<ConstantBuffer> m_CBO;
+		std::shared_ptr<ConstantBuffer> m_CBO2;
 		SkeletalModelBuffer m_Buffer;
+		SkeletalModelBuffer2 m_Buffer2;
 		std::vector<DirectX::XMMATRIX> m_Transformations;
 
 		Assimp::Importer m_Importer;

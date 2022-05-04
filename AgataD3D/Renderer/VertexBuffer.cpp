@@ -30,6 +30,41 @@ namespace Agata {
 
 	}
 
+	VertexBuffer::VertexBuffer(size_t size) : m_InputLayout(nullptr),
+		m_Stride(0), m_Offset(0), m_ID(nullptr) {
+
+		D3D11_BUFFER_DESC bufferDesc = { 0 };
+		bufferDesc.ByteWidth = static_cast<UINT>(size);
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		bufferDesc.MiscFlags = 0;
+		bufferDesc.StructureByteStride = 0;
+
+		HRESULT hr = 0;
+		hr = Renderer::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ID);
+
+		if (FAILED(hr)) {
+			OutputDebugString("No se pudo crear el Vertex Buffer\n");
+		}
+
+	}
+
+	void VertexBuffer::SendData(const void* data, size_t size, int64_t offset) {
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		HRESULT hr = Renderer::GetDeviceContext()->Map(m_ID, 0,
+			D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		if (FAILED(hr)) {
+			OutputDebugString("No se pudo actualizar el Vertex Buffer\n");
+		}
+
+		memcpy(msr.pData, data, size);
+		Renderer::GetDeviceContext()->Unmap(m_ID, 0);
+
+	}
+
 	//VertexBuffer::VertexBuffer(const VertexBuffer& rhs) {
 	//
 	//

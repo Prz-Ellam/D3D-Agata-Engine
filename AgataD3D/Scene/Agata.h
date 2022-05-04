@@ -18,6 +18,8 @@
 #include "Zoom.h"
 #include "SkeletalModel.h"
 #include "GUI.h"
+#include "BoxCollider.h"
+#include "Text.h"
 
 namespace DX = DirectX;
 

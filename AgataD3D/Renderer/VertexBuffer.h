@@ -12,6 +12,7 @@ namespace Agata {
 	class VertexBuffer : public IBindable {
 	public:
 		VertexBuffer(const void* data, size_t size);
+		VertexBuffer(size_t size);
 		//VertexBuffer(const VertexBuffer& rhs);
 		VertexBuffer(VertexBuffer&& rhs) noexcept;
 		virtual ~VertexBuffer();
@@ -19,6 +20,7 @@ namespace Agata {
 		void SetLayout(const std::vector<BufferLayout>& bufferLayout);
 
 		void Bind(uint32_t slot = 0u) const override;
+		void SendData(const void* data, size_t size, int64_t offset = 0ll);
 	private:
 		ID3D11Buffer* m_ID;
 		ID3D11InputLayout* m_InputLayout;

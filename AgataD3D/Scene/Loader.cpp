@@ -355,6 +355,46 @@ namespace Agata {
 
 	}
 
+	std::tuple<std::vector<Vertex>, std::vector<UINT>> Loader::LoadDynamicQuad() {
+
+		std::vector<Vertex> vertices;
+		vertices.resize(4);
+		vertices[0].pos = DX::XMFLOAT3(-0.05f, -0.05f, 0.0f);
+		vertices[1].pos = DX::XMFLOAT3(0.05f, -0.05f, 0.0f);
+		vertices[2].pos = DX::XMFLOAT3(0.05f, 0.05f, 0.0f);
+		vertices[3].pos = DX::XMFLOAT3(-0.05f, 0.05f, 0.0f);
+
+		vertices[0].uv =  DX::XMFLOAT2(0.0f, 0.0f);
+		vertices[1].uv =  DX::XMFLOAT2(1.0f, 0.0f);
+		vertices[2].uv =  DX::XMFLOAT2(1.0f, 1.0f);
+		vertices[3].uv =  DX::XMFLOAT2(0.0f, 1.0f);
+
+		vertices[0].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[1].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[2].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[3].normal = DX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[0].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[1].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[2].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[3].tangent = DX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[0].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[1].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[2].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[3].bitangent = DX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+
+		std::vector<UINT> indices;
+		indices.resize(6);
+		indices[0] = 0;
+		indices[1] = 1;
+		indices[2] = 2;
+		indices[3] = 2;
+		indices[4] = 3;
+		indices[5] = 0;
+
+		return { vertices, indices };
+
+	}
+
 	std::shared_ptr<Mesh> Loader::LoadHorizontalQuad() {
 
 		std::vector<Vertex> vertices;
