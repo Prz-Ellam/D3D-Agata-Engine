@@ -20,9 +20,12 @@ float v = 1 / 3.0f;
 
 	float4 fragColor = t_Texture.Sample(t_Sampler, input.uv);
 
-	if (all(fragColor > float4(0.8f, 0.8f, 0.8f, 0.8f))) {
-		clip(fragColor.a - 1.5f);
+	//if (all(fragColor == float4(1.0f, 1.0f, 1.0f, 1.0f))) {
+	//	clip(0.0f);
+	//}
+	if (fragColor.a < 0.5f) {
+		clip(-1);
 	}
 
-	return fragColor;
+	return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

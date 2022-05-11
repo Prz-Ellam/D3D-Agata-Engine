@@ -63,13 +63,17 @@ void Scene3D::OnInit() {
 	m_GUIShader = std::make_shared<Agata::Shader>("GUIVertex.cso", "GUIPixel.cso");
 	m_GUIShader->Bind();
 
-	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Observar.png", 1, 1);
-	m_VehicleGUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Subir.png", 1, 1);
+	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Observar.png", 
+		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.5f));
+	m_VehicleGUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Subir.png",
+		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.5f));
+	m_Icon = std::make_shared<Agata::GUI>("Assets//Images//UI//lose.png",
+		DirectX::XMFLOAT2(-0.85f, -0.8f), DirectX::XMFLOAT2(0.1f, 0.1f));
 
 	m_TextShader = std::make_shared<Agata::Shader>("TextVertex.cso", "TextPixel.cso");
 	m_TextShader->Bind();
 
-	m_Text = std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.bmp");
+	m_Text = std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
 
 
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
@@ -762,19 +766,21 @@ void Scene3D::Render() {
 		m_SpyGlass->OnRender();
 	}
 
+	m_GUIShader->Bind();
 	if (m_SpyGlassArea) {
-		m_GUIShader->Bind();
 		m_GUI->OnRender();
 	}
 
 	if (m_VehicleArea) {
-		m_GUIShader->Bind();
 		m_VehicleGUI->OnRender();
 	}
 
+	m_Icon->OnRender();
+
 
 	m_TextShader->Bind();
-	m_Text->DrawString(std::to_string(m_Cycle));
+	m_Text->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(-0.9, 0.9), 1.0f);
+	m_Text->DrawString("Objetos: ", DirectX::XMFLOAT2(-0.7, -0.8), 1.0f);
 	//m_FBO->UnbindFramebuffer();
 
 	//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
@@ -834,9 +840,7 @@ void Scene3D::RenderScene() {
 	for (auto& model : m_Models) {
 		model->OnRender();
 	}
-<<<<<<< HEAD
 	m_Vehicle->OnRender();
-=======
 	//m_Vehicle->OnRender();
 	
 	m_Planta1->OnRender();
@@ -857,7 +861,6 @@ void Scene3D::RenderScene() {
 	m_Tuerca5->OnRender();
 	m_Tuerca6->OnRender();
 	m_Tuerca7->OnRender();
->>>>>>> a00d4a646da66905aa80cc8287ef95e7b3e815c1
 
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();

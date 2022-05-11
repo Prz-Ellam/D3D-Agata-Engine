@@ -6,9 +6,9 @@
 
 namespace Agata {
 
-	GUI::GUI(const std::string& path, float width, float height) : 
-		Drawable(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 
-		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(.5f, .5f, .5f)), 
+	GUI::GUI(const std::string& path, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale) : 
+		Drawable(DirectX::XMFLOAT3(position.x, position.y, 0.0f), 
+		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(scale.x, scale.y, 1.0f)), 
 	    m_Texture(path) {
 
 		m_Mesh = Loader::Get().LoadQuad();

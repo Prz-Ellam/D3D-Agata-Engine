@@ -25,10 +25,13 @@ namespace Agata {
 		Text& operator=(const Text& other) = delete;
 		Text& operator=(Text&& other) noexcept = delete;
 
-		void DrawString(const std::string& text);
+		void DrawString(const std::string& text, const DirectX::XMFLOAT2 position, float scale);
 		void OnRender() override{ }
 	private:
 		void CreateCharacter(char character, int index);
+		bool CreateSamplerState();
+		static ID3D11SamplerState* s_SamplerState;
+		static bool s_SamplerCreated;
 		//std::shared_ptr<Mesh> m_Mesh;
 		VertexBuffer* m_VertexBuffer;
 		IndexBuffer* m_IndexBuffer;

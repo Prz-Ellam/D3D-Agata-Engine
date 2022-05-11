@@ -81,6 +81,7 @@ private:
 	std::shared_ptr<Agata::Zoom> m_SpyGlass;
 	std::shared_ptr<Agata::GUI> m_VehicleGUI;
 	std::shared_ptr<Agata::GUI> m_GUI;
+	std::shared_ptr<Agata::GUI> m_Icon;
 	std::shared_ptr<Agata::Text> m_Text;
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;

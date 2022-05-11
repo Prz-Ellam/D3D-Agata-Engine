@@ -6,8 +6,12 @@
 
 namespace Agata {
 
-	Text::Text(const std::string& path) : Drawable(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), 
-		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f)), m_Texture(path) {
+	ID3D11SamplerState* Text::s_SamplerState = nullptr;
+	bool Text::s_SamplerCreated;
+
+	Text::Text(const std::string& path) :
+		Drawable(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
+			DirectX::XMFLOAT3(1.0f * 4 / 7, 1.0f, 1.0f)), m_Texture(path) {
 
 		//m_Mesh = Loader::Get().LoadQuad();
 		m_VertexSize = 4 * sizeof(Vertex);
@@ -29,32 +33,11 @@ namespace Agata {
 
 		m_VertexBuffer->SetLayout(inputLayout);
 
-		//CreateCharacter('H', 0);
-		//CreateCharacter('o', 0);
+		CreateSamplerState();
 
 	}
 
-	void Text::DrawString(const std::string& text) {
-
-		//for (auto& character : text) {
-		//	CreateCharacter(character);
-		//}
-		/*
-		for (int i = 0; i < text.length(); i++) {
-
-			int ascii = static_cast<int>(text.at(i));
-
-			float uStep = 1 / 32; // Length of characters
-			float vStep = 1 / 3; 
-
-			int row = ascii / 32;
-			int column = ((ascii / 32.0f) - row + 1) * 32;
-
-			ascii* uStep;
-			ascii* uStep + uStep;
-
-		}
-		*/
+	void Text::DrawString(const std::string& text, const DirectX::XMFLOAT2 position, float scale) {
 
 		std::vector<Vertex> verticesData;
 		std::vector<UINT> indicesData;
@@ -105,7 +88,8 @@ namespace Agata {
 		m_VertexBuffer->SendData(verticesData.data(), verticesData.size() * sizeof(Vertex));
 		m_IndexBuffer->SendData(indicesData.data(), indicesData.size() * sizeof(UINT));
 
-
+		SetPosition(DirectX::XMFLOAT3(position.x, position.y, 0.0f));
+		SetScale(DirectX::XMFLOAT3(1.0f * 4 / 7 * scale, 1.0f * scale, 1.0f));
 		m_Buffer.c_Model = DX::XMMatrixTranspose(m_Transformation);
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
@@ -114,8 +98,8 @@ namespace Agata {
 
 		m_VertexBuffer->Bind();
 		m_IndexBuffer->Bind();
+		Renderer::GetDeviceContext()->PSSetSamplers(0u, 1u, &s_SamplerState);
 		
-
 		Renderer::GetDeviceContext()->DrawIndexed(m_IndexCount, 0u, 0u);
 		
 	}
@@ -148,5 +132,34 @@ namespace Agata {
 
 	}
 
+	bool Text::CreateSamplerState() {
 
-}
+		if (!s_SamplerCreated) {
+
+			D3D11_SAMPLER_DESC samplerDesc = {};
+			samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+			samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+			samplerDesc.MipLODBias = 0.0f;
+			samplerDesc.MinLOD = 0.0f;
+			samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+			HRESULT hr = Renderer::GetDevice()->CreateSamplerState(&samplerDesc, &s_SamplerState);
+
+			if (FAILED(hr)) {
+				OutputDebugString("No se pudo crear el Sampler State\n");
+				return false;
+			}
+
+			Renderer::GetDeviceContext()->PSSetSamplers(0u, 1u, &s_SamplerState);
+			s_SamplerCreated = true;
+
+			}
+
+			return true;
+
+		}
+
+	}

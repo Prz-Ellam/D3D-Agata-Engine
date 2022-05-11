@@ -17,7 +17,7 @@ namespace Agata {
 	class GUI : public Drawable {
 	public:
 		GUI() = default;
-		GUI(const std::string& path, float width, float height);
+		GUI(const std::string& path, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale);
 		GUI(const GUI& other) = delete;
 		GUI(GUI&& other) noexcept = delete;
 
