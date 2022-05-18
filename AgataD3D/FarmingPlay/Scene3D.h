@@ -29,6 +29,8 @@ public:
 	void RenderScene();
 private:
 	bool m_Running;
+	int cont=0;
+	int mod=0;
 	Agata::Timer m_Timer;
 	double m_Dt, m_Ts = 0.0f;
 	double m_Cycle;
@@ -38,7 +40,7 @@ private:
 	std::unique_ptr<Agata::Camera> m_Camera;
 
 	std::shared_ptr<Agata::StaticModel> m_Vehicle;
-	std::shared_ptr<Agata::StaticModel> m_Planta1;
+	/*std::shared_ptr<Agata::StaticModel> m_Planta1;
 	std::shared_ptr<Agata::StaticModel> m_Planta2;
 	std::shared_ptr<Agata::StaticModel> m_Planta3;
 	std::shared_ptr<Agata::StaticModel> m_Planta4;
@@ -53,10 +55,11 @@ private:
 	std::shared_ptr<Agata::StaticModel> m_Tuerca4;
 	std::shared_ptr<Agata::StaticModel> m_Tuerca5;
 	std::shared_ptr<Agata::StaticModel> m_Tuerca6;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca7;
+	std::shared_ptr<Agata::StaticModel> m_Tuerca7;*/
 	std::shared_ptr<Agata::SkeletalModel> m_SkeletalModel;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
+	std::vector<std::shared_ptr<Agata::StaticModel>> m_Items;
 
 	std::shared_ptr<Agata::Terrain> m_Terrain;
 	std::shared_ptr<Agata::Skybox> m_Skybox;
