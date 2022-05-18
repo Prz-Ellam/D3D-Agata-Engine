@@ -662,7 +662,6 @@ void Scene3D::Update() {
 
 	for (auto& Item : m_Items) {
 		if (Item->IsColliding(m_Camera) == true) { // al menos 1 de las condiciones sale falsa
-			Item->SetPosition(DirectX::XMFLOAT3(300.0f,300.0f,300.0f));
 			m_Icon->OnRender();
 			cont++;
 		}
