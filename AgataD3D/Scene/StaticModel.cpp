@@ -32,6 +32,15 @@ namespace Agata {
 			diffuse, specular, specularPower);
 
 	}
+	
+	bool StaticModel::IsColliding(std::unique_ptr<Camera>& camera) {
+		for (auto& collider : m_Colliders) {
+			if (collider.IsColliding(camera->GetPosition())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	void StaticModel::CheckCollision(std::unique_ptr<Camera>& camera) {
 
