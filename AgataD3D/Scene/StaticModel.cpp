@@ -32,6 +32,15 @@ namespace Agata {
 			diffuse, specular, specularPower);
 
 	}
+	
+	bool StaticModel::IsColliding(std::unique_ptr<Camera>& camera) {
+		for (auto& collider : m_Colliders) {
+			if (collider.IsColliding(camera->GetPosition())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	void StaticModel::CheckCollision(std::unique_ptr<Camera>& camera) {
 
@@ -39,6 +48,17 @@ namespace Agata {
 			if (collider.IsColliding(camera->GetPosition())) {
 				camera->Back();
 			}
+		}
+
+	}
+	
+	void StaticModel::SetPositionC(const DX::XMFLOAT3& position) {
+
+		m_Position = position;
+		m_Transformation = SetMatrix();
+		//m_Colliders = colliders;
+		for (auto& collider : m_Colliders) {
+			collider.SetTransformation(m_Transformation);
 		}
 
 	}

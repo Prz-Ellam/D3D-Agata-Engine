@@ -29,6 +29,8 @@ public:
 	void RenderScene();
 private:
 	bool m_Running;
+	int cont = 0.0f;
+	int contL = 0.0f;
 	Agata::Timer m_Timer;
 	double m_Dt, m_Ts = 0.0f;
 	double m_Cycle;
@@ -38,25 +40,15 @@ private:
 	std::unique_ptr<Agata::Camera> m_Camera;
 
 	std::shared_ptr<Agata::StaticModel> m_Vehicle;
-	std::shared_ptr<Agata::StaticModel> m_Planta1;
-	std::shared_ptr<Agata::StaticModel> m_Planta2;
-	std::shared_ptr<Agata::StaticModel> m_Planta3;
-	std::shared_ptr<Agata::StaticModel> m_Planta4;
-	std::shared_ptr<Agata::StaticModel> m_Planta5;
-	std::shared_ptr<Agata::StaticModel> m_Planta6;
-	std::shared_ptr<Agata::StaticModel> m_Planta7;
-	std::shared_ptr<Agata::StaticModel> m_Llave1;
-	std::shared_ptr<Agata::StaticModel> m_Llave2;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca1;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca2;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca3;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca4;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca5;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca6;
-	std::shared_ptr<Agata::StaticModel> m_Tuerca7;
-	std::shared_ptr<Agata::SkeletalModel> m_SkeletalModel;
+	std::shared_ptr<Agata::StaticModel> m_Telescope;
+
+	std::shared_ptr<Agata::SkeletalModel> m_Forward;
+	std::shared_ptr<Agata::SkeletalModel> m_Idle;
+	std::shared_ptr<Agata::SkeletalModel> m_Backward;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
+	std::vector<std::shared_ptr<Agata::StaticModel>> m_Items;
+	std::vector<std::shared_ptr<Agata::StaticModel>> m_Llaves;
 
 	std::shared_ptr<Agata::Terrain> m_Terrain;
 	std::shared_ptr<Agata::Skybox> m_Skybox;
@@ -82,7 +74,12 @@ private:
 	std::shared_ptr<Agata::GUI> m_VehicleGUI;
 	std::shared_ptr<Agata::GUI> m_GUI;
 	std::shared_ptr<Agata::GUI> m_Icon;
+	std::shared_ptr<Agata::GUI> m_Win;
+	std::shared_ptr<Agata::GUI> m_IconO;
+	std::shared_ptr<Agata::GUI> m_IconOL;
 	std::shared_ptr<Agata::Text> m_Text;
+	std::shared_ptr<Agata::Text> m_cronometro;
+	std::shared_ptr<Agata::Text> m_cantidad;
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;
 
@@ -91,7 +88,18 @@ private:
 	bool m_IsZoom = false;
 	bool m_SpyGlassArea = false;
 	bool m_VehicleArea = false;
-};
+	bool m_ItemArea = false;
+	bool m_ItemArea2 = false;
+	bool m_LoseG = false;
+	bool m_WinG = false;
+	bool m_enable = false;
+	bool m_IsThirdPerson = true;
 
+	enum AnimatedModel {
+		IDLE,
+		FORWARD,
+		BACKWARD,
+	} m_CharacterStates = IDLE;
+};
 
 #endif

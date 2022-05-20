@@ -7,7 +7,7 @@ namespace Agata {
 	Water::Water(const DX::XMFLOAT3& position, const DX::XMFLOAT3& rotation, 
 		const DX::XMFLOAT3& scale, const std::string& dudvMap,
 		const std::string& normalMap, uint32_t width, uint32_t height) 
-		: Drawable(position, position, scale), m_MoveFactor(0.0f), m_Refraction(width, height), 
+		: Drawable(position, rotation, scale), m_MoveFactor(0.0f), m_Refraction(width, height), 
 		m_Reflection(width, height), m_DudvMap(dudvMap), m_NormalMap(normalMap) {
 
 		m_Mesh = Loader::Get().LoadHorizontalQuad();
@@ -17,8 +17,8 @@ namespace Agata {
 
 	void Water::OnUpdate(double dt) {
 
-		m_Transformation = DX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z)
-			* DX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
+		m_Transformation = DX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
+			DX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
 		m_MoveFactor = std::fmod(m_MoveFactor + dt * 0.01f, 1.0f);
 

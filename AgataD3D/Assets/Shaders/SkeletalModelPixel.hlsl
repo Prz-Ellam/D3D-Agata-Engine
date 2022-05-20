@@ -55,7 +55,7 @@ float4 main(PSInput input) : SV_TARGET {
 
 	clip(texColour.a < 0.5f ? -1 : 1); // Discard in GLSL
 
-	return diffuseColour * float4(ambient + diffuse + specular, 1.0f);
+	return diffuseColour * float4(ambient + diffuse, 1.0f);
 
 
 }

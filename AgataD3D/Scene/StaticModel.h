@@ -41,6 +41,8 @@ namespace Agata {
 		virtual ~StaticModel() = default;
 
 		void CheckCollision(std::unique_ptr<Camera>& camera);
+		bool IsColliding(std::unique_ptr<Camera>& camera);
+		void SetPositionC(const DX::XMFLOAT3& position);
 
 		StaticModel& operator=(const StaticModel& other) = default;
 		StaticModel& operator=(StaticModel&& other) noexcept = default;

@@ -285,6 +285,12 @@ namespace Agata {
 
 	}
 
+	void Camera::SetPosition(DirectX::XMFLOAT3 position) {
+
+		m_Position = DirectX::XMLoadFloat3(&position);
+
+	}
+
 	float Camera::GetYaw() const {
 
 		return m_Yaw;

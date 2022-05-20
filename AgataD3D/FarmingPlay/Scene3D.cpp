@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Scene3D.h"
-
 #include "Joystick.h"
-
 
 float lerp(float a, float b, float t) {
 	return a + t * (b - a);
@@ -68,12 +66,20 @@ void Scene3D::OnInit() {
 	m_VehicleGUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Subir.png",
 		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.5f));
 	m_Icon = std::make_shared<Agata::GUI>("Assets//Images//UI//lose.png",
-		DirectX::XMFLOAT2(-0.85f, -0.8f), DirectX::XMFLOAT2(0.1f, 0.1f));
+		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	m_Win = std::make_shared<Agata::GUI>("Assets//Images//UI//win.png",
+		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	m_IconO = std::make_shared<Agata::GUI>("Assets//Images//UI//objetos.png",
+		DirectX::XMFLOAT2(-0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
+	m_IconOL = std::make_shared<Agata::GUI>("Assets//Images//UI//objetosllave.png",
+		DirectX::XMFLOAT2(0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
 
 	m_TextShader = std::make_shared<Agata::Shader>("TextVertex.cso", "TextPixel.cso");
 	m_TextShader->Bind();
 
 	m_Text = std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
+	m_cronometro= std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
+    m_cantidad= std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
 
 
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
@@ -82,7 +88,7 @@ void Scene3D::OnInit() {
 	float x, z;
 	x = 0.0f;
 	z = 0.0f;
-	m_SkeletalModel = Agata::SkeletalModelBuilder::GenerateParams().
+	m_Forward = Agata::SkeletalModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Personaje//Forward.fbx").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
@@ -90,6 +96,25 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
 		//NormalTexture("Assets//Models//Casa 1//norm.png").
 		Build();
+
+	m_Idle = Agata::SkeletalModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Personaje//Idle.fbx").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
+		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
+		//NormalTexture("Assets//Models//Casa 1//norm.png").
+		Build();
+
+	m_Backward = Agata::SkeletalModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Personaje//Backward.fbx").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
+		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
+		//NormalTexture("Assets//Models//Casa 1//norm.png").
+		Build();
+
 
 
 
@@ -120,16 +145,16 @@ void Scene3D::OnInit() {
 		DefaultCollider(true).
 		Build());
 
-	x = -10.0f;
-	z = -20.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	x = -9.0f;
+	z = -23.0f;
+	m_Telescope = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Telescopio//telescopio.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Telescopio//albedo.png").
 		NormalTexture("Assets//Models//Telescopio//normal.png").
-		Build());
+		Build();
 
 	DirectX::XMFLOAT3 min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
 	m_SpyGlassCollider = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 4, min.y, min.z - 4),
@@ -143,12 +168,12 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(0.8f, 0.8f, 0.8f)).
 		DiffuseTexture("Assets//Models//Tractor//foto2.jpg").
+		NormalTexture("Assets//Models//Tractor//normal.png").
 		Build();
 
 	min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
 	m_VehicleCollider = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 4, min.y, min.z - 4),
 		                                   DirectX::XMFLOAT3(min.x + 4, min.y, min.z + 4));
-	
 	x = 20.0f;
 	z = -40.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -220,166 +245,182 @@ void Scene3D::OnInit() {
 
 	x = -40.0f;//1
 	z = -33.0f;//-45
-	m_Planta1 = Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta1//planta1.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta1//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta1C.aabb").
+		Build());
 
-	x = -35.0f;//2
+	x = -34.0f;//2
 	z = 25.0f;//-45
-	m_Planta2 = Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta1//planta1.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta1//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta1C.aabb").
+		Build());
 
-	x = 15.0f;//3
+	x = 14.0f;//3
 	z = -10.0f;//-45
-	m_Planta3=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta2//planta2.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta2//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta2C.aabb").
+		Build());
 
-	x = -15.0f; //4
-	z = -22.0f;
-	m_Planta4=Agata::StaticModelBuilder::GenerateParams().
+	x = -14.0f; //4
+	z = -25.0f;
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta3//planta3.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta3//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta3C.aabb").
+		Build());
 
-	x = -15.0f; //5
+	x = -12.0f; //5
 	z = 25.0f;
-	m_Planta5=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta3//planta3.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta3//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta3C.aabb").
+		Build());
 
 	x = -20.0f; //6
 	z = 4.0f;
-	m_Planta6=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta4//planta4.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta4//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta4C.aabb").
+		Build());
 
 
 	x = 8.0f; //7
 	z = -36.0f;
-	m_Planta7=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//plants//Planta5//planta5.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Planta5//Plants_Texture.png").
-		Build();
+		AddCollider("Assets//Colliders//planta5C.aabb").
+		Build());
 	
 	
-	x = 70.0f; //1
+	x = 74.0f; //1
 	z = 25.0f;
-	m_Llave1=Agata::StaticModelBuilder::GenerateParams().
-		ModelPath("Assets//Models//llave//llave.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
-		DiffuseTexture("Assets//Models//llave//Checkers_Base_Color.png").
-		Build();
+	m_Llaves.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//llave2//llave2.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//llave2//wrenchExport_lambert2_R.png").
+		AddCollider("Assets//Colliders//llaveC.aabb").
+		Build());
 
 
-	x = 70.0f; //2
+	x = 74.0f; //2
 	z = 10.0f;
-	m_Llave2=Agata::StaticModelBuilder::GenerateParams().
-		ModelPath("Assets//Models//llave//llave.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
-		DiffuseTexture("Assets//Models//llave//Checkers_Base_Color.png").
-		Build();
+	m_Llaves.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//llave2//llave2.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//llave2//wrenchExport_lambert2_R.png").
+		AddCollider("Assets//Colliders//llaveC.aabb").
+		Build());
 
-	x = 5.0f;//1
+	x = 6.0f;//1
 	z = -45.0f;
-	m_Tuerca1=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
-	x = -15.0f;//2
+	x = -14.0f;//2
 	z = 25.0f;
-	m_Tuerca2=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
-	x = -20.0f;//3
+	x = -22.0f;//3
 	z = 5.0f;
-	m_Tuerca3=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
-	x = 2.0f; //4
+	x = 5.0f; //4
 	z = 10.0f;
-	m_Tuerca4=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
 	x = 2.0f;//5
 	z = -10.0f;
-	m_Tuerca5=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
-	x = -40.0f;//6
+	x = -50.0f;//6
 	z = -35.0f;
-	m_Tuerca6=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 
-	x = 30.0f; //7
+	x = 32.0f; //7
 	z = 20.0f;
-	m_Tuerca7=Agata::StaticModelBuilder::GenerateParams().
+	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//tuerca//NutMat_Roughness.jpeg").
-		Build();
+		AddCollider("Assets//Colliders//tuercaC.aabb").
+		Build());
 	
 	x = 18.0f;
 	z = 8.0f;
@@ -467,7 +508,7 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//Arbol//Bitmap2Material_3_Base_Color.tga.png").
 		NormalTexture("Assets//Models//Arbol//Bitmap2Material_3_Normal.tga.png").
 		Build());
-	
+
 
 	m_SkyboxShader = std::make_shared<Agata::Shader>("SkyboxVertex.cso", "SkyboxPixel.cso");
 	m_SkyboxShader->Bind();
@@ -520,8 +561,8 @@ void Scene3D::OnInit() {
 
 	m_WaterShader = std::make_shared<Agata::Shader>("WaterVertex.cso", "WaterPixel.cso");
 	m_WaterShader->Bind();
-	m_Water = std::make_shared<Agata::Water>(DX::XMFLOAT3(30, 1.5, 0), DX::XMFLOAT3(0, 0, 0),
-		DX::XMFLOAT3(2, 2, 2), "Assets//Images//Water//dudv.png", 
+	m_Water = std::make_shared<Agata::Water>(DX::XMFLOAT3(53, 3.5, 0), DX::XMFLOAT3(0, 0, 0),
+		DX::XMFLOAT3(2, 1, 4), "Assets//Images//Water//dudv.png", 
 		"Assets//Images//Water//normalMap.png", 
 		m_Window->GetWidth(), m_Window->GetHeight());
 
@@ -576,7 +617,7 @@ void Scene3D::OnRun() {
 		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
 		m_Timer.Restart();
-
+	
 	}
 
 }
@@ -593,7 +634,9 @@ void Scene3D::OnRun() {
 #define NIGHT_TO_MORNING_MIN -135.0f
 #define NIGHT_TO_MORNING_MAX -160.0f
 
+
 void Scene3D::Update() {
+
 
 	m_Window->SetTitle(
 		"X: " + std::to_string(m_Camera->GetPosition().x) + ", " + 
@@ -611,8 +654,26 @@ void Scene3D::Update() {
 		model->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 		model->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	}
-	m_SkeletalModel->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_SkeletalModel->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
+	for (auto& Item : m_Items) {
+		Item->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		Item->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	}
+
+	for (auto& Llave : m_Llaves) {
+		Llave->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		Llave->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	}
+
+	m_Telescope->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_Telescope->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
+	m_Forward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_Forward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	m_Idle->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_Idle->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	m_Backward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_Backward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	
 	m_Camera->Move(m_Dt);
 
@@ -633,6 +694,38 @@ void Scene3D::Update() {
 	for (auto& model : m_Models) {
 		model->CheckCollision(m_Camera);
 	}
+
+
+	for (auto& Item : m_Items) {
+		if (Item->IsColliding(m_Camera) == true) {
+			Item->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
+			cont++;
+			m_ItemArea = true;
+		}
+	}
+
+	for (auto& Llave : m_Llaves) {
+		if (Llave->IsColliding(m_Camera) == true) {
+			Llave->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
+			contL++;
+			m_ItemArea2 = true;
+		}
+	}
+
+	if (m_Cycle < 0 && cont < 14 && contL<2) {
+		m_LoseG = true;
+	
+	}
+	else if (m_Cycle < 0 && cont < 14 && contL == 2) {
+		m_LoseG = true;
+	}
+	else if (m_Cycle < 0 && cont == 14 && contL < 2) {
+		m_LoseG = true;
+	}
+	else if(contL == 2) {
+		m_enable = true;
+	}
+
 	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
 	m_Camera->Update(m_Terrain);
 	m_Skybox->OnUpdate(m_Dt);
@@ -642,10 +735,45 @@ void Scene3D::Update() {
 	m_Tree1->OnUpdate(m_Dt);
 	m_Tree2->OnUpdate(m_Dt);
 
-	m_SkeletalModel->OnUpdate(m_Ts);
-	//m_SkeletalModel->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-	//	m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-	//m_SkeletalModel->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+	if (GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) {
+		m_CharacterStates = FORWARD;
+	}
+	if (GetAsyncKeyState(static_cast<int>('S')) & 1 << 16) {
+		m_CharacterStates = BACKWARD;
+	}
+
+	if (!(GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) &&
+		!(GetAsyncKeyState(static_cast<int>('S')) & 1 << 16)) {
+		m_CharacterStates = IDLE;
+	}
+
+	if (m_IsThirdPerson) {
+
+		switch (m_CharacterStates) {
+		case FORWARD: {
+			m_Forward->OnUpdate(m_Ts);
+			m_Forward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+			m_Forward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+			break;
+		}
+		case IDLE: {
+			m_Idle->OnUpdate(m_Ts);
+			m_Idle->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+			m_Idle->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+			break;
+		}
+		case BACKWARD: {
+			m_Backward->OnUpdate(m_Ts);
+			m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+			m_Backward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+			break;
+		}
+		}
+
+	}
 
 
 	//m_Vehicle->FollowCamera(m_Camera);
@@ -722,9 +850,9 @@ void Scene3D::Render() {
 
 	float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
 	m_Camera->ChangePitchDirection();
-	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()));
+	m_Camera->MoveHeight(-distance);
 	m_Camera->Update(m_Terrain);
-	//m_Camera->MoveHeight(-distance);
+	m_Camera->MoveHeight(distance);
 
 
 	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
@@ -735,8 +863,6 @@ void Scene3D::Render() {
 	m_Water->EndReflection();
 
 	// Agata::Renderer::EndScene();
-
-
 
 	m_Camera->MoveHeight(distance);
 	m_Camera->ChangePitchDirection();
@@ -775,12 +901,31 @@ void Scene3D::Render() {
 		m_VehicleGUI->OnRender();
 	}
 
-	m_Icon->OnRender();
+	if (m_LoseG) {
+		m_Icon->OnRender();
+		
+	}
+	
+	if(m_WinG){
+		m_Win->OnRender();
+	}
 
+	m_IconO->OnRender();
+	m_IconOL->OnRender();
 
 	m_TextShader->Bind();
-	m_Text->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(-0.9, 0.9), 1.0f);
-	m_Text->DrawString("Objetos: ", DirectX::XMFLOAT2(-0.7, -0.8), 1.0f);
+	m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
+	m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
+	m_Text->DrawString("+ Repara el tractor", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
+
+	if (m_ItemArea) {
+		m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
+	}
+
+	if (m_ItemArea2) {
+		m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
+	}
+
 	//m_FBO->UnbindFramebuffer();
 
 	//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
@@ -813,10 +958,16 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 
 	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press) {
 		m_Camera->TogglePerson();
+		m_IsThirdPerson = !m_IsThirdPerson;
+	}
+
+	if (e.GetKeyCode() == Agata::KeyCode::KeyR && e.GetKeyAction() == Agata::KeyAction::Press) {//reiniciar
+		//reiniciar
 	}
 
 	if (e.GetKeyCode() == Agata::KeyCode::KeyZ && e.GetKeyAction() == Agata::KeyAction::Press) {
 		m_IsZoom = !m_IsZoom;
+		m_Camera->SetPosition(DirectX::XMFLOAT3(-10.32f, m_Terrain->GetHeight(-10.32f, -23.0f), -23.0f));
 		if (m_IsZoom) {
 			m_Camera->SetSensitivity(124.44444f);
 			m_Camera->GetPerspectiveCameraPropsRef().Fov = 7.0f;
@@ -827,6 +978,13 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 		}
 	}
 
+	//tractor
+	if (m_enable) {
+
+		if (cont == 14) {
+			m_WinG = true;//UI de ganador
+		}
+	}
 }
 void Scene3D::RenderScene() {
 
@@ -840,27 +998,23 @@ void Scene3D::RenderScene() {
 	for (auto& model : m_Models) {
 		model->OnRender();
 	}
+
+
+	for (auto& Item : m_Items) {
+			Item->OnRender();
+	}
+
+	for (auto& Llave : m_Llaves) {
+		Llave->OnRender();
+	}
+
 	m_Vehicle->OnRender();
+
+	if (!m_IsZoom) {
+		m_Telescope->OnRender();
+	}
+
 	//m_Vehicle->OnRender();
-	
-	m_Planta1->OnRender();
-	m_Planta2->OnRender();
-	m_Planta3->OnRender();
-	m_Planta4->OnRender();
-	m_Planta5->OnRender();
-	m_Planta6->OnRender();
-	m_Planta7->OnRender();
-
-	m_Llave1->OnRender();
-	m_Llave2->OnRender();
-
-	m_Tuerca1->OnRender();
-	m_Tuerca2->OnRender();
-	m_Tuerca3->OnRender();
-	m_Tuerca4->OnRender();
-	m_Tuerca5->OnRender();
-	m_Tuerca6->OnRender();
-	m_Tuerca7->OnRender();
 
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();
@@ -870,6 +1024,24 @@ void Scene3D::RenderScene() {
 	m_Fire->OnRender();
 
 	m_SkeletalModelShader->Bind();
-	m_SkeletalModel->OnRender();
+
+	if (m_IsThirdPerson) {
+
+		switch (m_CharacterStates) {
+		case FORWARD: {
+			m_Forward->OnRender();
+			break;
+		}
+		case IDLE: {
+			m_Idle->OnRender();
+			break;
+		}
+		case BACKWARD: {
+			m_Backward->OnRender();
+			break;
+		}
+		}
+		
+	}
 
 }

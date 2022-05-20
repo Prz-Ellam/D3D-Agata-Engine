@@ -73,6 +73,7 @@ namespace Agata {
 
 		DirectX::XMFLOAT3 GetPosition() const;
 		DirectX::XMFLOAT3 GetDirection() const;
+		void SetPosition(DirectX::XMFLOAT3 position);
 		float GetX() const;
 		float GetZ() const;
 		float GetY() const;
