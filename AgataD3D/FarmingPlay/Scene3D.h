@@ -3,8 +3,6 @@
 #pragma once
 
 #include "Agata.h"
-#include <future>
-#include <thread>
 
 class Scene3D : public Agata::Scene {
 public:
@@ -30,8 +28,8 @@ public:
 	void Restart();
 private:
 	bool m_Running;
-	int cont = 0.0f;
-	int contL = 0.0f;
+	int cont = 0;
+	int contL = 0;
 	Agata::Timer m_Timer;
 	double m_Dt, m_Ts = 0.0f;
 	double m_Cycle;
@@ -46,6 +44,7 @@ private:
 	std::shared_ptr<Agata::SkeletalModel> m_Forward;
 	std::shared_ptr<Agata::SkeletalModel> m_Idle;
 	std::shared_ptr<Agata::SkeletalModel> m_Backward;
+	std::shared_ptr<Agata::SkeletalModel> m_Sitting;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Items;
@@ -99,6 +98,7 @@ private:
 		IDLE,
 		FORWARD,
 		BACKWARD,
+		SITTING
 	} m_CharacterStates = IDLE;
 
 	enum GameState {

@@ -93,7 +93,6 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
 		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
-		//NormalTexture("Assets//Models//Casa 1//norm.png").
 		Build();
 
 	m_Idle = Agata::SkeletalModelBuilder::GenerateParams().
@@ -102,7 +101,6 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
 		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
-		//NormalTexture("Assets//Models//Casa 1//norm.png").
 		Build();
 
 	m_Backward = Agata::SkeletalModelBuilder::GenerateParams().
@@ -111,10 +109,15 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
 		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
-		//NormalTexture("Assets//Models//Casa 1//norm.png").
 		Build();
 
-
+	m_Sitting = Agata::SkeletalModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Personaje//Sitting.fbx").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(0.01f, 0.01f, 0.01f)).
+		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
+		Build();
 
 
 	m_StaticModelShader = std::make_shared<Agata::Shader>("StaticModelVertex.cso", "StaticModelPixel.cso");
@@ -668,6 +671,8 @@ void Scene3D::Update() {
 	m_Idle->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	m_Backward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 	m_Backward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+	m_Sitting->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+	m_Sitting->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 	
 	m_Camera->Move(m_Dt);
 
@@ -751,6 +756,10 @@ void Scene3D::Update() {
 		m_CharacterStates = IDLE;
 	}
 
+	if (m_IsInVehicle) {
+		m_CharacterStates = SITTING;
+	}
+
 	if (m_IsThirdPerson) {
 
 		switch (m_CharacterStates) {
@@ -773,6 +782,13 @@ void Scene3D::Update() {
 			m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
 			m_Backward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+			break;
+		}
+		case SITTING: {
+			m_Sitting->OnUpdate(m_Ts);
+			m_Sitting->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+			m_Sitting->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
 			break;
 		}
 		}
@@ -1057,6 +1073,10 @@ void Scene3D::RenderScene() {
 			m_Backward->OnRender();
 			break;
 		}
+		case SITTING: {
+			m_Sitting->OnRender();
+			break;
+		}
 		}
 		
 	}
@@ -1080,11 +1100,19 @@ void Scene3D::Restart() {
 	};
 	m_Camera = std::make_unique<Agata::Camera>(properties, 60.0f, 800.0f);
 
-	m_VehicleEnable = false;
-	cont = 0.0f;
-	contL = 0.0f;
-	m_IsThirdPerson = true;
-
 	m_GameState = GAMEPLAY;
+	m_CharacterStates = IDLE;
+
+	cont = 0;
+	contL = 0;
+
+	m_IsZoom = false;
+	m_SpyGlassArea = false;
+	m_VehicleArea = false;
+	m_ItemArea = false;
+	m_ItemArea2 = false;
+	m_VehicleEnable = false;
+	m_IsThirdPerson = true;
+	m_IsInVehicle = false;
 
 }
