@@ -51,6 +51,17 @@ namespace Agata {
 		}
 
 	}
+	
+	void StaticModel::SetPositionC(const DX::XMFLOAT3& position) {
+
+		m_Position = position;
+		m_Transformation = SetMatrix();
+		//m_Colliders = colliders;
+		for (auto& collider : m_Colliders) {
+			collider.SetTransformation(m_Transformation);
+		}
+
+	}
 
 	void StaticModel::OnRender() {
 
