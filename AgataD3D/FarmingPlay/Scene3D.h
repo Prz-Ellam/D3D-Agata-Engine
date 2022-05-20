@@ -27,6 +27,7 @@ public:
 	void Render();
 
 	void RenderScene();
+	void Restart();
 private:
 	bool m_Running;
 	int cont = 0.0f;
@@ -90,16 +91,22 @@ private:
 	bool m_VehicleArea = false;
 	bool m_ItemArea = false;
 	bool m_ItemArea2 = false;
-	bool m_LoseG = false;
-	bool m_WinG = false;
-	bool m_enable = false;
+	bool m_VehicleEnable = false;
 	bool m_IsThirdPerson = true;
+	bool m_IsInVehicle = false;
 
 	enum AnimatedModel {
 		IDLE,
 		FORWARD,
 		BACKWARD,
 	} m_CharacterStates = IDLE;
+
+	enum GameState {
+		MENU,
+		GAMEPLAY,
+		WIN,
+		LOSE
+	} m_GameState = GAMEPLAY;
 };
 
 #endif

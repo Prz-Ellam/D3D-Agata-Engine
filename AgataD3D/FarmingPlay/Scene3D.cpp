@@ -32,7 +32,6 @@ void Scene3D::OnInit() {
 	};
 	m_Camera = std::make_unique<Agata::Camera>(properties, 60.0f, 800.0f);
 
-
 	// Load Models, Textures, Shaders, Resources
 	m_TerrainShader = std::make_shared<Agata::Shader>("TerrainVertex.cso", "TerrainPixel.cso");
 	m_TerrainShader->Bind();
@@ -583,18 +582,14 @@ void Scene3D::OnInit() {
 		"Assets//Images//Fire//fireNoise.png",
 		DX::XMFLOAT3(20, m_Terrain->GetHeight(20, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
 
-
 	m_ZoomShader = std::make_shared<Agata::Shader>("ZoomVertex.cso", "ZoomPixel.cso");
 	m_ZoomShader->Bind();
 	m_SpyGlass = std::make_shared<Agata::Zoom>("Assets//Images//Zoom//zoom.jpg");
-
 
 	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, -400.0f), 
 		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
 
 	m_Cycle = 180.0f;
-
-
 }
 
 void Scene3D::OnRun() {
@@ -633,7 +628,6 @@ void Scene3D::OnRun() {
 
 #define NIGHT_TO_MORNING_MIN -135.0f
 #define NIGHT_TO_MORNING_MAX -160.0f
-
 
 void Scene3D::Update() {
 
@@ -677,19 +671,24 @@ void Scene3D::Update() {
 	
 	m_Camera->Move(m_Dt);
 
-	if (m_SpyGlassCollider.IsColliding(m_Camera->GetPosition()) && !m_IsZoom) {
+	if (m_VehicleCollider.IsColliding(m_Camera->GetPosition()) && m_VehicleEnable && !m_IsInVehicle) {
+		m_VehicleArea = true;
+	}
+	else {
+		m_VehicleArea = false;
+	}
+
+	if (m_SpyGlassCollider.IsColliding(m_Camera->GetPosition()) && !m_IsZoom && !m_IsInVehicle && !m_VehicleArea && !m_IsThirdPerson) {
 		m_SpyGlassArea = true;
 	}
 	else {
 		m_SpyGlassArea = false;
 	}
 
-	if (m_VehicleCollider.IsColliding(m_Camera->GetPosition())) {
-		m_VehicleArea = true;
-	}
-	else {
-		m_VehicleArea = false;
-	}
+	m_VehicleCollider.SetMinX(m_Vehicle->GetPosition().x - 5.0f);
+	m_VehicleCollider.SetMinZ(m_Vehicle->GetPosition().z - 5.0f);
+	m_VehicleCollider.SetMaxX(m_Vehicle->GetPosition().x + 5.0f);
+	m_VehicleCollider.SetMaxZ(m_Vehicle->GetPosition().z + 5.0f);
 
 	for (auto& model : m_Models) {
 		model->CheckCollision(m_Camera);
@@ -713,17 +712,22 @@ void Scene3D::Update() {
 	}
 
 	if (m_Cycle < 0 && cont < 14 && contL<2) {
-		m_LoseG = true;
+		m_GameState = LOSE;
 	
 	}
 	else if (m_Cycle < 0 && cont < 14 && contL == 2) {
-		m_LoseG = true;
+		m_GameState = LOSE;
 	}
 	else if (m_Cycle < 0 && cont == 14 && contL < 2) {
-		m_LoseG = true;
+		m_GameState = LOSE;
 	}
 	else if(contL == 2) {
-		m_enable = true;
+		m_VehicleEnable = true;
+	}
+
+	//tractor
+	if (m_VehicleEnable && cont == 14) {
+		m_GameState = WIN;//UI de ganador
 	}
 
 	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
@@ -775,8 +779,9 @@ void Scene3D::Update() {
 
 	}
 
-
-	//m_Vehicle->FollowCamera(m_Camera);
+	if (m_IsInVehicle) {
+		m_Vehicle->FollowCamera(m_Camera);
+	}
 
 
 	if (m_Cycle < MORNING_TO_DAY_MIN && m_Cycle > MORNING_TO_DAY_MAX) {
@@ -845,94 +850,104 @@ void Scene3D::Update() {
 
 void Scene3D::Render() {
 
+
+	switch (m_GameState) {
+	case GAMEPLAY: {
+		float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
+		m_Camera->ChangePitchDirection();
+		m_Camera->MoveHeight(-distance);
+		m_Camera->Update(m_Terrain);
+		m_Camera->MoveHeight(distance);
+
+
+		Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
+		Agata::Renderer::BeginScene(m_Camera, m_Light);
+
+		m_Water->BeginReflection();
+		RenderScene();
+		m_Water->EndReflection();
+
+		// Agata::Renderer::EndScene();
+
+		m_Camera->MoveHeight(distance);
+		m_Camera->ChangePitchDirection();
+		m_Camera->Update(m_Terrain);
+
+		Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
+		Agata::Renderer::BeginScene(m_Camera, m_Light);
+
+		m_Water->BeginRefraction();
+		RenderScene();
+		m_Water->EndRefraction();
+
+		// Agata::Renderer::EndScene();
+
+
+
+		Agata::Renderer::BeginScene(m_Camera, m_Light);
+		Agata::Renderer::Clear(0.2f, 0.2f, 0.2f, 1.0f);
+
+		RenderScene();
+
+		m_WaterShader->Bind();
+		m_Water->OnRender();
+
+		if (m_IsZoom) {
+			m_ZoomShader->Bind();
+			m_SpyGlass->OnRender();
+		}
+
+		m_GUIShader->Bind();
+		if (m_SpyGlassArea) {
+			m_GUI->OnRender();
+		}
+
+		if (m_VehicleArea) {
+			m_VehicleGUI->OnRender();
+		}
+
+		m_IconO->OnRender();
+		m_IconOL->OnRender();
+
+		m_TextShader->Bind();
+		m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
+		m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
+		m_Text->DrawString("+ Repara el tractor", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
+
+		if (m_ItemArea) {
+			m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
+		}
+
+		if (m_ItemArea2) {
+			m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
+		}
+
+		//m_FBO->UnbindFramebuffer();
+
+		//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
+
+		//m_QuadShader->Bind();
+		//m_FBO->BindTexture(0);
+		//m_Quad->Bind();
+		break;
+	}
+	case WIN: {
+		m_GUIShader->Bind();
+		m_Win->OnRender();
+		break;
+	}
+	case LOSE: {
+		m_GUIShader->Bind();
+		m_Icon->OnRender();
+		break;
+	}
+	}
+
+
 	//m_FBO->BindFrameBuffer();
 	//m_FBO->Clear(0, 1, 0, 0);
 
-	float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
-	m_Camera->ChangePitchDirection();
-	m_Camera->MoveHeight(-distance);
-	m_Camera->Update(m_Terrain);
-	m_Camera->MoveHeight(distance);
-
-
-	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
-	Agata::Renderer::BeginScene(m_Camera, m_Light);
-
-	m_Water->BeginReflection();
-	RenderScene();
-	m_Water->EndReflection();
-
-	// Agata::Renderer::EndScene();
-
-	m_Camera->MoveHeight(distance);
-	m_Camera->ChangePitchDirection();
-	m_Camera->Update(m_Terrain);
-
-	Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
-	Agata::Renderer::BeginScene(m_Camera, m_Light);
-
-	m_Water->BeginRefraction();
-	RenderScene();
-	m_Water->EndRefraction();
-
-	// Agata::Renderer::EndScene();
-
-
-
-	Agata::Renderer::BeginScene(m_Camera, m_Light);
-	Agata::Renderer::Clear(0.2f, 0.2f, 0.2f, 1.0f);
-
-	RenderScene();
-
-	m_WaterShader->Bind();
-	m_Water->OnRender();
-
-	if (m_IsZoom) {
-		m_ZoomShader->Bind();
-		m_SpyGlass->OnRender();
-	}
-
-	m_GUIShader->Bind();
-	if (m_SpyGlassArea) {
-		m_GUI->OnRender();
-	}
-
-	if (m_VehicleArea) {
-		m_VehicleGUI->OnRender();
-	}
-
-	if (m_LoseG) {
-		m_Icon->OnRender();
-		
-	}
 	
-	if(m_WinG){
-		m_Win->OnRender();
-	}
-
-	m_IconO->OnRender();
-	m_IconOL->OnRender();
-
-	m_TextShader->Bind();
-	m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
-	m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
-	m_Text->DrawString("+ Repara el tractor", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
-
-	if (m_ItemArea) {
-		m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
-	}
-
-	if (m_ItemArea2) {
-		m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
-	}
-
-	//m_FBO->UnbindFramebuffer();
-
-	//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
-
-	//m_QuadShader->Bind();
-	//m_FBO->BindTexture(0);
-	//m_Quad->Bind();
 
 
 }
@@ -961,8 +976,19 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 		m_IsThirdPerson = !m_IsThirdPerson;
 	}
 
+	if (e.GetKeyCode() == Agata::KeyCode::KeyV && e.GetKeyAction() == Agata::KeyAction::Press &&
+		(m_VehicleArea || m_IsInVehicle)) {
+		m_IsInVehicle = !m_IsInVehicle;
+		if (m_IsInVehicle) {
+			m_Camera->SetSpeed(90.0f);
+		}
+		else {
+			m_Camera->SetSpeed(60.0f);
+		}
+	}
+
 	if (e.GetKeyCode() == Agata::KeyCode::KeyR && e.GetKeyAction() == Agata::KeyAction::Press) {//reiniciar
-		//reiniciar
+		Restart();
 	}
 
 	if (e.GetKeyCode() == Agata::KeyCode::KeyZ && e.GetKeyAction() == Agata::KeyAction::Press) {
@@ -978,13 +1004,6 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 		}
 	}
 
-	//tractor
-	if (m_enable) {
-
-		if (cont == 14) {
-			m_WinG = true;//UI de ganador
-		}
-	}
 }
 void Scene3D::RenderScene() {
 
@@ -1014,8 +1033,6 @@ void Scene3D::RenderScene() {
 		m_Telescope->OnRender();
 	}
 
-	//m_Vehicle->OnRender();
-
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();
 	m_Tree2->OnRender();
@@ -1043,5 +1060,31 @@ void Scene3D::RenderScene() {
 		}
 		
 	}
+
+}
+
+void Scene3D::Restart() {
+
+	m_Light = std::make_shared<Agata::DirectionLight>(DX::XMFLOAT3(0.0f, 0.0f, -400.0f), 
+		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
+
+	m_Cycle = 180.0f;
+
+	m_Skybox->SetBlendFactor(DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
+
+	Agata::PerspectiveCameraProps properties = {
+		45.0f,
+		static_cast<float>(m_Window->GetWidth()) / m_Window->GetHeight(),
+		0.1f,
+		1000.0f
+	};
+	m_Camera = std::make_unique<Agata::Camera>(properties, 60.0f, 800.0f);
+
+	m_VehicleEnable = false;
+	cont = 0.0f;
+	contL = 0.0f;
+	m_IsThirdPerson = true;
+
+	m_GameState = GAMEPLAY;
 
 }

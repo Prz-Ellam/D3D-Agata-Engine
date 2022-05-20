@@ -9,7 +9,7 @@ namespace DX = DirectX;
 namespace Agata {
 
 	Camera::Camera(const PerspectiveCameraProps& properties, float speed, float sensitivity)
-		: m_Position(DX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0F)), m_Speed(speed), 
+		: m_Position(DX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)), m_Speed(speed), 
 		m_Sensitivity(sensitivity), m_Properties(properties){
 
 		m_Forward = DX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
