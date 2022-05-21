@@ -47,6 +47,7 @@ private:
 	std::shared_ptr<Agata::SkeletalModel> m_Sitting;
 
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Models;
+	std::shared_ptr<Agata::StaticModel> m_Tree[2];
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Items;
 	std::vector<std::shared_ptr<Agata::StaticModel>> m_Llaves;
 
@@ -77,11 +78,14 @@ private:
 	std::shared_ptr<Agata::GUI> m_Win;
 	std::shared_ptr<Agata::GUI> m_IconO;
 	std::shared_ptr<Agata::GUI> m_IconOL;
+	std::shared_ptr<Agata::GUI> m_Menu;
 	std::shared_ptr<Agata::Text> m_Text;
 	std::shared_ptr<Agata::Text> m_cronometro;
 	std::shared_ptr<Agata::Text> m_cantidad;
 
 	std::shared_ptr<Agata::DirectionLight> m_Light;
+
+	std::vector<DirectX::XMFLOAT3> m_TreePositions;
 
 	Agata::BoxCollider m_SpyGlassCollider;
 	Agata::BoxCollider m_VehicleCollider;
@@ -106,7 +110,7 @@ private:
 		GAMEPLAY,
 		WIN,
 		LOSE
-	} m_GameState = GAMEPLAY;
+	} m_GameState = MENU;
 };
 
 #endif

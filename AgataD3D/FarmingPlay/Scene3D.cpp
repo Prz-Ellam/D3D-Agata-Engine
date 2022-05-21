@@ -72,6 +72,8 @@ void Scene3D::OnInit() {
 		DirectX::XMFLOAT2(-0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
 	m_IconOL = std::make_shared<Agata::GUI>("Assets//Images//UI//objetosllave.png",
 		DirectX::XMFLOAT2(0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
+	m_Menu = std::make_shared<Agata::GUI>("Assets//Images//UI//Menu.jpg",
+		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 
 	m_TextShader = std::make_shared<Agata::Shader>("TextVertex.cso", "TextPixel.cso");
 	m_TextShader->Bind();
@@ -493,23 +495,23 @@ void Scene3D::OnInit() {
 	
 	x = -10.0f;
 	z = 20.0f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tree[0] = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Arbol//Tree01.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Wood_002.png").
 		NormalTexture("Assets//Models//Arbol//Wood_002_normal.tga.png").
-		Build());
+		Build();
 
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+	m_Tree[1] = Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Arbol//Tree02.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Bitmap2Material_3_Base_Color.tga.png").
 		NormalTexture("Assets//Models//Arbol//Bitmap2Material_3_Normal.tga.png").
-		Build());
+		Build();
 
 
 	m_SkyboxShader = std::make_shared<Agata::Shader>("SkyboxVertex.cso", "SkyboxPixel.cso");
@@ -572,10 +574,12 @@ void Scene3D::OnInit() {
 	m_BillboardShader = std::make_shared<Agata::Shader>("BillboardVertex.cso", "BillboardPixel.cso");
 	m_BillboardShader->Bind();
 
-	m_Tree1 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//Autumn_Pine.png", 
-		DX::XMFLOAT3(13, m_Terrain->GetHeight(13, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
-	m_Tree2 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//tree2.png", 
-		DX::XMFLOAT3(10, m_Terrain->GetHeight(10, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
+	m_Tree1 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//Autumn_Pine.png",
+		"Assets//Images//Billboards//Autumn_Pine_Normal.png",
+		DX::XMFLOAT3(-36, m_Terrain->GetHeight(-36, -3) + 4.5, -3), DX::XMFLOAT3(5, 5, 5));
+	m_Tree2 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//tree2.png",
+		"Assets//Images//Billboards//tree2Norm.png",
+		DX::XMFLOAT3(30, m_Terrain->GetHeight(30, -40) + 5, -40), DX::XMFLOAT3(5, 5, 5));
 
 	m_FireShader = std::make_shared<Agata::Shader>("FireVertex.cso", "FirePixel.cso");
 	m_FireShader->Bind();
@@ -593,6 +597,11 @@ void Scene3D::OnInit() {
 		DX::XMFLOAT3(1.0f, 0.5f, 0.5f));
 
 	m_Cycle = 180.0f;
+
+	m_TreePositions.push_back(DirectX::XMFLOAT3(-10.0f, m_Terrain->GetHeight(-10.0f, 20.0f), 20.0f));
+	m_TreePositions.push_back(DirectX::XMFLOAT3(-9.74f, m_Terrain->GetHeight(-9.74, -1.91), -1.91f));
+
+
 }
 
 void Scene3D::OnRun() {
@@ -611,8 +620,6 @@ void Scene3D::OnRun() {
 		m_Timer.Stop();
 		m_Dt = m_Timer.GetMiliseconds();
 		m_Ts += m_Dt;
-
-		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
 		m_Timer.Restart();
 	
@@ -634,231 +641,236 @@ void Scene3D::OnRun() {
 
 void Scene3D::Update() {
 
+	if (m_GameState == GAMEPLAY) {
 
-	m_Window->SetTitle(
-		"X: " + std::to_string(m_Camera->GetPosition().x) + ", " + 
-		"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
-		"Z: " + std::to_string(m_Camera->GetPosition().z));
+		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
-	float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
-	float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
+		m_Window->SetTitle(
+			"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
+			"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
+			"Z: " + std::to_string(m_Camera->GetPosition().z));
 
-	m_Light->SetPositionY(y);
-	m_Light->SetPositionZ(z);
-	float I = std::max(0.4f * std::sin(DirectX::XMConvertToRadians(m_Cycle)) + 0.2f, 0.2f) + 0.1f;
+		float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
+		float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
 
-	for (auto& model : m_Models) {
-		model->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-		model->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	}
+		m_Light->SetPositionY(y);
+		m_Light->SetPositionZ(z);
+		float I = std::max(0.4f * std::sin(DirectX::XMConvertToRadians(m_Cycle)) + 0.2f, 0.2f) + 0.1f;
 
-	for (auto& Item : m_Items) {
-		Item->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-		Item->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	}
-
-	for (auto& Llave : m_Llaves) {
-		Llave->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-		Llave->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	}
-
-	m_Telescope->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_Telescope->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-
-	m_Forward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_Forward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	m_Idle->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_Idle->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	m_Backward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_Backward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	m_Sitting->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
-	m_Sitting->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
-	
-	m_Camera->Move(m_Dt);
-
-	if (m_VehicleCollider.IsColliding(m_Camera->GetPosition()) && m_VehicleEnable && !m_IsInVehicle) {
-		m_VehicleArea = true;
-	}
-	else {
-		m_VehicleArea = false;
-	}
-
-	if (m_SpyGlassCollider.IsColliding(m_Camera->GetPosition()) && !m_IsZoom && !m_IsInVehicle && !m_VehicleArea && !m_IsThirdPerson) {
-		m_SpyGlassArea = true;
-	}
-	else {
-		m_SpyGlassArea = false;
-	}
-
-	m_VehicleCollider.SetMinX(m_Vehicle->GetPosition().x - 5.0f);
-	m_VehicleCollider.SetMinZ(m_Vehicle->GetPosition().z - 5.0f);
-	m_VehicleCollider.SetMaxX(m_Vehicle->GetPosition().x + 5.0f);
-	m_VehicleCollider.SetMaxZ(m_Vehicle->GetPosition().z + 5.0f);
-
-	for (auto& model : m_Models) {
-		model->CheckCollision(m_Camera);
-	}
-
-
-	for (auto& Item : m_Items) {
-		if (Item->IsColliding(m_Camera) == true) {
-			Item->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
-			cont++;
-			m_ItemArea = true;
-		}
-	}
-
-	for (auto& Llave : m_Llaves) {
-		if (Llave->IsColliding(m_Camera) == true) {
-			Llave->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
-			contL++;
-			m_ItemArea2 = true;
-		}
-	}
-
-	if (m_Cycle < 0 && cont < 14 && contL<2) {
-		m_GameState = LOSE;
-	
-	}
-	else if (m_Cycle < 0 && cont < 14 && contL == 2) {
-		m_GameState = LOSE;
-	}
-	else if (m_Cycle < 0 && cont == 14 && contL < 2) {
-		m_GameState = LOSE;
-	}
-	else if(contL == 2) {
-		m_VehicleEnable = true;
-	}
-
-	//tractor
-	if (m_VehicleEnable && cont == 14) {
-		m_GameState = WIN;//UI de ganador
-	}
-
-	//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
-	m_Camera->Update(m_Terrain);
-	m_Skybox->OnUpdate(m_Dt);
-	m_Water->OnUpdate(m_Dt);
-	m_Fire->OnUpdate(m_Dt);
-
-	m_Tree1->OnUpdate(m_Dt);
-	m_Tree2->OnUpdate(m_Dt);
-
-	if (GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) {
-		m_CharacterStates = FORWARD;
-	}
-	if (GetAsyncKeyState(static_cast<int>('S')) & 1 << 16) {
-		m_CharacterStates = BACKWARD;
-	}
-
-	if (!(GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) &&
-		!(GetAsyncKeyState(static_cast<int>('S')) & 1 << 16)) {
-		m_CharacterStates = IDLE;
-	}
-
-	if (m_IsInVehicle) {
-		m_CharacterStates = SITTING;
-	}
-
-	if (m_IsThirdPerson) {
-
-		switch (m_CharacterStates) {
-		case FORWARD: {
-			m_Forward->OnUpdate(m_Ts);
-			m_Forward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-			m_Forward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
-			break;
-		}
-		case IDLE: {
-			m_Idle->OnUpdate(m_Ts);
-			m_Idle->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-			m_Idle->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
-			break;
-		}
-		case BACKWARD: {
-			m_Backward->OnUpdate(m_Ts);
-			m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-			m_Backward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
-			break;
-		}
-		case SITTING: {
-			m_Sitting->OnUpdate(m_Ts);
-			m_Sitting->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
-				m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
-			m_Sitting->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
-			break;
-		}
+		for (auto& model : m_Models) {
+			model->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+			model->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 		}
 
-	}
+		for (auto& Item : m_Items) {
+			Item->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+			Item->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		}
 
-	if (m_IsInVehicle) {
-		m_Vehicle->FollowCamera(m_Camera);
-	}
+		for (auto& Llave : m_Llaves) {
+			Llave->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+			Llave->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		}
+
+		m_Telescope->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Telescope->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
+		m_Forward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Forward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		m_Idle->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Idle->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		m_Backward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Backward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		m_Sitting->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Sitting->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
+		m_Camera->Move(m_Dt);
+
+		if (m_VehicleCollider.IsColliding(m_Camera->GetPosition()) && m_VehicleEnable && !m_IsInVehicle) {
+			m_VehicleArea = true;
+		}
+		else {
+			m_VehicleArea = false;
+		}
+
+		if (m_SpyGlassCollider.IsColliding(m_Camera->GetPosition()) && !m_IsZoom && !m_IsInVehicle && !m_VehicleArea && !m_IsThirdPerson) {
+			m_SpyGlassArea = true;
+		}
+		else {
+			m_SpyGlassArea = false;
+		}
+
+		m_VehicleCollider.SetMinX(m_Vehicle->GetPosition().x - 5.0f);
+		m_VehicleCollider.SetMinZ(m_Vehicle->GetPosition().z - 5.0f);
+		m_VehicleCollider.SetMaxX(m_Vehicle->GetPosition().x + 5.0f);
+		m_VehicleCollider.SetMaxZ(m_Vehicle->GetPosition().z + 5.0f);
+
+		for (auto& model : m_Models) {
+			model->CheckCollision(m_Camera);
+		}
 
 
-	if (m_Cycle < MORNING_TO_DAY_MIN && m_Cycle > MORNING_TO_DAY_MAX) {
+		for (auto& Item : m_Items) {
+			if (Item->IsColliding(m_Camera) == true) {
+				Item->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
+				cont++;
+				m_ItemArea = true;
+			}
+		}
 
-		// Conversion de [MORNING_TO_DAY_MIN, MORNING_TO_DAY_MAX] a [0, 1]
-		float MorningLength = (MORNING_TO_DAY_MAX - MORNING_TO_DAY_MIN);
-		float t = (m_Cycle - MORNING_TO_DAY_MIN) / MorningLength;
+		for (auto& Llave : m_Llaves) {
+			if (Llave->IsColliding(m_Camera) == true) {
+				Llave->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
+				contL++;
+				m_ItemArea2 = true;
+			}
+		}
 
-		// Conversion de interpolacion lineal a smootherstep
-		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+		if (m_Cycle < 0 && cont < 14 && contL < 2) {
+			m_GameState = LOSE;
 
-		m_Skybox->SetBlendFactor(DX::XMFLOAT4(1 - t, t, 0.0f, 0.0f));
-		m_Light->SetColourG(lerp(0.5f, 1.0f, t));
-		m_Light->SetColourB(lerp(0.5f, 1.0f, t));
+		}
+		else if (m_Cycle < 0 && cont < 14 && contL == 2) {
+			m_GameState = LOSE;
+		}
+		else if (m_Cycle < 0 && cont == 14 && contL < 2) {
+			m_GameState = LOSE;
+		}
+		else if (contL == 2) {
+			m_VehicleEnable = true;
+		}
 
-	}
+		//tractor
+		if (m_VehicleEnable && cont == 14) {
+			m_GameState = WIN;//UI de ganador
+		}
 
-	if (m_Cycle < DAY_TO_SUNSET_MIN && m_Cycle > DAY_TO_SUNSET_MAX) {
+		//m_Camera->SetY(m_Terrain->GetHeight(m_Camera->GetX(), m_Camera->GetZ()) + 1.665);
+		m_Camera->Update(m_Terrain);
+		m_Skybox->OnUpdate(m_Dt);
+		m_Water->OnUpdate(m_Dt);
+		m_Fire->OnUpdate(m_Dt);
 
-		// Conversion de [DAY_TO_SUNSET_MIN, DAY_TO_SUNSET_MAX] a [0, 1]
-		float DayLength = (DAY_TO_SUNSET_MAX - DAY_TO_SUNSET_MIN);
-		float t = (m_Cycle - DAY_TO_SUNSET_MIN) / DayLength;
+		m_Tree1->OnUpdate(m_Dt);
+		m_Tree2->OnUpdate(m_Dt);
 
-		// Conversion de interpolacion lineal a smootherstep
-		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+		if (GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) {
+			m_CharacterStates = FORWARD;
+		}
+		if (GetAsyncKeyState(static_cast<int>('S')) & 1 << 16) {
+			m_CharacterStates = BACKWARD;
+		}
 
-		m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 1 - t, t, 0.0f));
-		m_Light->SetColourG(lerp(1.0f, 0.5f, t));
-		m_Light->SetColourB(lerp(1.0f, 0.5f, t));
+		if (!(GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) &&
+			!(GetAsyncKeyState(static_cast<int>('S')) & 1 << 16)) {
+			m_CharacterStates = IDLE;
+		}
 
-	}
+		if (m_IsInVehicle) {
+			m_CharacterStates = SITTING;
+		}
 
-	if (m_Cycle < SUNSET_TO_NIGHT_MIN && m_Cycle > SUNSET_TO_NIGHT_MAX) {
+		if (m_IsThirdPerson) {
 
-		// Conversion de [SUNSET_TO_NIGHT_MIN, SUNSET_TO_NIGHT_MAX] a [0, 1]
-		float SunsetLength = (SUNSET_TO_NIGHT_MAX - SUNSET_TO_NIGHT_MIN);
-		float t = (m_Cycle - SUNSET_TO_NIGHT_MIN) / SunsetLength;
+			switch (m_CharacterStates) {
+			case FORWARD: {
+				m_Forward->OnUpdate(m_Ts);
+				m_Forward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+				m_Forward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+				break;
+			}
+			case IDLE: {
+				m_Idle->OnUpdate(m_Ts);
+				m_Idle->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+				m_Idle->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+				break;
+			}
+			case BACKWARD: {
+				m_Backward->OnUpdate(m_Ts);
+				m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+				m_Backward->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+				break;
+			}
+			case SITTING: {
+				m_Sitting->OnUpdate(m_Ts);
+				m_Sitting->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
+					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
+				m_Sitting->SetRotation(DirectX::XMFLOAT3(0.0f, -(m_Camera->GetYaw() - 90.0f), 0.0f));
+				break;
+			}
+			}
 
-		// Conversion de interpolacion lineal a smootherstep
-		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+		}
 
-		m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 0.0f, 1 - t, t));
-		m_Light->SetColourR(lerp(1.0f, 0.05f, t));
-		m_Light->SetColourG(lerp(0.5f, 0.15f, t));
-		m_Light->SetColourB(lerp(0.5f, 0.6f, t));
+		if (m_IsInVehicle) {
+			m_Vehicle->FollowCamera(m_Camera);
+		}
 
-	}
 
-	if (m_Cycle < NIGHT_TO_MORNING_MIN && m_Cycle > NIGHT_TO_MORNING_MAX) {
+		if (m_Cycle < MORNING_TO_DAY_MIN && m_Cycle > MORNING_TO_DAY_MAX) {
 
-		// Conversion de [NIGHT_TO_MORNING_MIN, NIGHT_TO_MORNING_MAX] a [0, 1]
-		float NightLength = (NIGHT_TO_MORNING_MAX - NIGHT_TO_MORNING_MIN);
-		float t = (m_Cycle - NIGHT_TO_MORNING_MIN) / NightLength;
+			// Conversion de [MORNING_TO_DAY_MIN, MORNING_TO_DAY_MAX] a [0, 1]
+			float MorningLength = (MORNING_TO_DAY_MAX - MORNING_TO_DAY_MIN);
+			float t = (m_Cycle - MORNING_TO_DAY_MIN) / MorningLength;
 
-		// Conversion de interpolacion lineal a smootherstep
-		t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+			// Conversion de interpolacion lineal a smootherstep
+			t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
 
-		m_Skybox->SetBlendFactor(DX::XMFLOAT4(t, 0.0f, 0.0f, 1 - t));
-		m_Light->SetColourR(lerp(0.05f, 1.0f, t));
-		m_Light->SetColourG(lerp(0.15f, 0.5f, t));
-		m_Light->SetColourB(lerp(0.6f, 0.5f, t));
+			m_Skybox->SetBlendFactor(DX::XMFLOAT4(1 - t, t, 0.0f, 0.0f));
+			m_Light->SetColourG(lerp(0.5f, 1.0f, t));
+			m_Light->SetColourB(lerp(0.5f, 1.0f, t));
+
+		}
+
+		if (m_Cycle < DAY_TO_SUNSET_MIN && m_Cycle > DAY_TO_SUNSET_MAX) {
+
+			// Conversion de [DAY_TO_SUNSET_MIN, DAY_TO_SUNSET_MAX] a [0, 1]
+			float DayLength = (DAY_TO_SUNSET_MAX - DAY_TO_SUNSET_MIN);
+			float t = (m_Cycle - DAY_TO_SUNSET_MIN) / DayLength;
+
+			// Conversion de interpolacion lineal a smootherstep
+			t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+
+			m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 1 - t, t, 0.0f));
+			m_Light->SetColourG(lerp(1.0f, 0.5f, t));
+			m_Light->SetColourB(lerp(1.0f, 0.5f, t));
+
+		}
+
+		if (m_Cycle < SUNSET_TO_NIGHT_MIN && m_Cycle > SUNSET_TO_NIGHT_MAX) {
+
+			// Conversion de [SUNSET_TO_NIGHT_MIN, SUNSET_TO_NIGHT_MAX] a [0, 1]
+			float SunsetLength = (SUNSET_TO_NIGHT_MAX - SUNSET_TO_NIGHT_MIN);
+			float t = (m_Cycle - SUNSET_TO_NIGHT_MIN) / SunsetLength;
+
+			// Conversion de interpolacion lineal a smootherstep
+			t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+
+			m_Skybox->SetBlendFactor(DX::XMFLOAT4(0.0f, 0.0f, 1 - t, t));
+			m_Light->SetColourR(lerp(1.0f, 0.05f, t));
+			m_Light->SetColourG(lerp(0.5f, 0.15f, t));
+			m_Light->SetColourB(lerp(0.5f, 0.6f, t));
+
+		}
+
+		if (m_Cycle < NIGHT_TO_MORNING_MIN && m_Cycle > NIGHT_TO_MORNING_MAX) {
+
+			// Conversion de [NIGHT_TO_MORNING_MIN, NIGHT_TO_MORNING_MAX] a [0, 1]
+			float NightLength = (NIGHT_TO_MORNING_MAX - NIGHT_TO_MORNING_MIN);
+			float t = (m_Cycle - NIGHT_TO_MORNING_MIN) / NightLength;
+
+			// Conversion de interpolacion lineal a smootherstep
+			t = t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);
+
+			m_Skybox->SetBlendFactor(DX::XMFLOAT4(t, 0.0f, 0.0f, 1 - t));
+			m_Light->SetColourR(lerp(0.05f, 1.0f, t));
+			m_Light->SetColourG(lerp(0.15f, 0.5f, t));
+			m_Light->SetColourB(lerp(0.6f, 0.5f, t));
+
+		}
 
 	}
 
@@ -868,6 +880,11 @@ void Scene3D::Render() {
 
 
 	switch (m_GameState) {
+	case MENU: {
+		m_GUIShader->Bind();
+		m_Menu->OnRender();
+		break;
+	}
 	case GAMEPLAY: {
 		float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
 		m_Camera->ChangePitchDirection();
@@ -930,13 +947,13 @@ void Scene3D::Render() {
 		m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
 		m_Text->DrawString("+ Repara el tractor", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
 
-		if (m_ItemArea) {
+		//if (m_ItemArea) {
 			m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
-		}
+		//}
 
-		if (m_ItemArea2) {
+		//if (m_ItemArea2) {
 			m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
-		}
+		//}
 
 		//m_FBO->UnbindFramebuffer();
 
@@ -987,7 +1004,12 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 		m_Running = false;
 	}
 
-	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press) {
+	if (e.GetKeyCode() == Agata::KeyCode::KeyF && e.GetKeyAction() == Agata::KeyAction::Press
+		&& m_GameState == MENU) {
+		m_GameState = GAMEPLAY;
+	}
+
+	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press && !m_IsZoom) {
 		m_Camera->TogglePerson();
 		m_IsThirdPerson = !m_IsThirdPerson;
 	}
@@ -1034,6 +1056,12 @@ void Scene3D::RenderScene() {
 		model->OnRender();
 	}
 
+	for (int i = 0; i < m_TreePositions.size(); i++) {
+		m_Tree[0]->SetPosition(m_TreePositions[i]);
+		m_Tree[1]->SetPosition(m_TreePositions[i]);
+		m_Tree[0]->OnRender();
+		m_Tree[1]->OnRender();
+	}
 
 	for (auto& Item : m_Items) {
 			Item->OnRender();
