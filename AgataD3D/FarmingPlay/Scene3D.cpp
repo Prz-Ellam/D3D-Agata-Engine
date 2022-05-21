@@ -675,6 +675,9 @@ void Scene3D::Update() {
 		m_Telescope->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 		m_Telescope->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 
+		m_Vehicle->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
+		m_Vehicle->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
 		m_Forward->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 		m_Forward->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 		m_Idle->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
@@ -1142,5 +1145,26 @@ void Scene3D::Restart() {
 	m_VehicleEnable = false;
 	m_IsThirdPerson = true;
 	m_IsInVehicle = false;
+
+	m_Items[0]->SetPositionC(DirectX::XMFLOAT3(-40.0f, m_Terrain->GetHeight(-40.0f, -33.0f), -33.0f));
+	m_Items[1]->SetPositionC(DirectX::XMFLOAT3(-34.0f, m_Terrain->GetHeight(-34.0f, 25.0f), 25.0f));
+	m_Items[2]->SetPositionC(DirectX::XMFLOAT3(14.0f, m_Terrain->GetHeight(14.0f, -10.0f), -10.0f));
+	m_Items[3]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, -25.0f), -25.0f));
+	m_Items[4]->SetPositionC(DirectX::XMFLOAT3(-12.0f, m_Terrain->GetHeight(-12.0f, 25.0f), 25.0f));
+	m_Items[5]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
+	m_Items[6]->SetPositionC(DirectX::XMFLOAT3(8.0f, m_Terrain->GetHeight(8.0f, -36.0f), -36.0f));
+	m_Items[7]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
+	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -45.0f), -45.0f));
+	m_Items[9]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, 25.0f), 25.0f));
+	m_Items[10]->SetPositionC(DirectX::XMFLOAT3(-22.0f, m_Terrain->GetHeight(-22.0f, 5.0f), 5.0f));
+	m_Items[11]->SetPositionC(DirectX::XMFLOAT3(5.0f, m_Terrain->GetHeight(5.0f, 10.0f), 10.0f));
+	m_Items[12]->SetPositionC(DirectX::XMFLOAT3(2.0f, m_Terrain->GetHeight(2.0f, -10.0f), -10.0f));
+	m_Items[13]->SetPositionC(DirectX::XMFLOAT3(-50.0f, m_Terrain->GetHeight(-50.0f, -35.0f), -35.0f));
+
+	m_Llaves[0]->SetPositionC(DirectX::XMFLOAT3(74.0f, m_Terrain->GetHeight(74.0f, 25.0f), 25.0f));
+	m_Llaves[1]->SetPositionC(DirectX::XMFLOAT3(74.0f, m_Terrain->GetHeight(74.0f, 10.0f), 10.0f));
+
+	m_Vehicle->SetPositionC(DirectX::XMFLOAT3(10.0f, m_Terrain->GetHeight(10.0f, -20.0f), -20.0f));
+	m_Vehicle->SetRotation(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 }
