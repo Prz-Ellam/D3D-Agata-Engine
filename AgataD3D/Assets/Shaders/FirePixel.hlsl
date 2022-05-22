@@ -28,6 +28,4 @@ float4 main(PSInput input) : SV_TARGET
 	outColour.a = (alphaTex.x + alphaTex.y + alphaTex.z) / 3;
 
 	return outColour;
-	return dudv.Sample(samplerX, input.uv);
-	return float4(0.0f, 0.0f, 1.0f, 1.0f);
 }

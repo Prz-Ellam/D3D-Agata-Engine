@@ -60,6 +60,7 @@ namespace Agata {
 		StaticModelBuffer2 m_Buffer2;
 
 		std::vector<BoxCollider> m_Colliders;
+		std::vector<BoxCollider> m_LocalColliders;
 	};
 
 	class StaticModelBuilder {

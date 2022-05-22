@@ -121,9 +121,12 @@ namespace Agata {
 		m_Yaw = m_Yaw + m_YawVelocity * dt + m_YawAcceleration * dt * dt * 0.5f;
 		m_YawVelocity = m_YawVelocity + m_YawAcceleration * dt;
 
-		//if (m_Position.x > 200.0f || m_Position.x < -200.0f || m_Position.z > 200.0f || m_Position.z < -200.0f) {
-		//	m_Position = m_PrevPosition;
-		//}
+		DirectX::XMFLOAT3 position;
+		DirectX::XMStoreFloat3(&position, m_Position);
+
+		if (position.x > 80.0f || position.x < -80.0f || position.z > 80.0f || position.z < -80.0f) {
+			m_Position = m_PrevPosition;
+		}
 
 	}
 

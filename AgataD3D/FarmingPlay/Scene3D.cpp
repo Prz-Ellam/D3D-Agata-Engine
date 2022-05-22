@@ -470,8 +470,8 @@ void Scene3D::OnInit() {
 		DefaultCollider(true).
 		Build());
 	
-	x = 20.0f;
-	z = -11.0f;
+	x = -30.0f;
+	z = -17.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//campfire//campfire.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -587,7 +587,7 @@ void Scene3D::OnInit() {
 		"Assets//Images//Fire//alphaFire.gif", 
 		"Assets//Images//Fire//dudv.png", 
 		"Assets//Images//Fire//fireNoise.png",
-		DX::XMFLOAT3(20, m_Terrain->GetHeight(20, -11) + 1, -11), DX::XMFLOAT3(1, 1, 1));
+		DX::XMFLOAT3(-30, m_Terrain->GetHeight(-30, -17) + 1, -17), DX::XMFLOAT3(1, 1, 1));
 
 	m_ZoomShader = std::make_shared<Agata::Shader>("ZoomVertex.cso", "ZoomPixel.cso");
 	m_ZoomShader->Bind();
@@ -600,8 +600,10 @@ void Scene3D::OnInit() {
 
 	m_TreePositions.push_back(DirectX::XMFLOAT3(-10.0f, m_Terrain->GetHeight(-10.0f, 20.0f), 20.0f));
 	m_TreePositions.push_back(DirectX::XMFLOAT3(-9.74f, m_Terrain->GetHeight(-9.74, -1.91), -1.91f));
-
-
+	m_TreePositions.push_back(DirectX::XMFLOAT3(-41.42f, m_Terrain->GetHeight(-41.42f, -44.31f), -44.31f));
+	m_TreePositions.push_back(DirectX::XMFLOAT3(0.02f, m_Terrain->GetHeight(0.02f, -30.89f), -30.89f));
+	m_TreePositions.push_back(DirectX::XMFLOAT3(26.13f, m_Terrain->GetHeight(26.13f, -9.79f), -9.79f));
+	m_TreePositions.push_back(DirectX::XMFLOAT3(26.68f, m_Terrain->GetHeight(26.68f, 34.47f), 34.47f));
 }
 
 void Scene3D::OnRun() {
@@ -891,9 +893,9 @@ void Scene3D::Render() {
 	case GAMEPLAY: {
 		float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
 		m_Camera->ChangePitchDirection();
-		m_Camera->MoveHeight(-distance);
+		//m_Camera->MoveHeight(distance);
 		m_Camera->Update(m_Terrain);
-		m_Camera->MoveHeight(distance);
+		//m_Camera->MoveHeight(-distance);
 
 
 		Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
@@ -905,7 +907,7 @@ void Scene3D::Render() {
 
 		// Agata::Renderer::EndScene();
 
-		m_Camera->MoveHeight(distance);
+		//m_Camera->MoveHeight(distance);
 		m_Camera->ChangePitchDirection();
 		m_Camera->Update(m_Terrain);
 
@@ -1084,9 +1086,6 @@ void Scene3D::RenderScene() {
 	m_Tree1->OnRender();
 	m_Tree2->OnRender();
 
-	m_FireShader->Bind();
-	m_Fire->OnRender();
-
 	m_SkeletalModelShader->Bind();
 
 	if (m_IsThirdPerson) {
@@ -1111,6 +1110,10 @@ void Scene3D::RenderScene() {
 		}
 		
 	}
+
+
+	m_FireShader->Bind();
+	m_Fire->OnRender();
 
 }
 

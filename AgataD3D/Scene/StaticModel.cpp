@@ -20,6 +20,7 @@ namespace Agata {
 		}
 		else {
 			m_Mesh = Loader::Get().LoadStaticModel(modelPath);
+			m_LocalColliders = colliders;
 			m_Colliders = colliders;
 			for (auto& collider : m_Colliders) {
 				collider.SetTransformation(m_Transformation);
@@ -56,7 +57,7 @@ namespace Agata {
 
 		m_Position = position;
 		m_Transformation = SetMatrix();
-		//m_Colliders = colliders;
+		m_Colliders = m_LocalColliders;
 		for (auto& collider : m_Colliders) {
 			collider.SetTransformation(m_Transformation);
 		}
