@@ -1208,6 +1208,6 @@ void Scene3D::Restart() {
 	
 	Audio::GetInstance().StopSound(6);
 	Audio::GetInstance().StopSound(7);
-	Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
+	//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
 
 }
