@@ -235,6 +235,10 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//farm//FarmUV.png").
+		AddCollider("Assets//Colliders//farmC9.aabb").
+		AddCollider("Assets//Colliders//farmC10.aabb").
+		AddCollider("Assets//Colliders//farmC11.aabb").
+		AddCollider("Assets//Colliders//farmC15.aabb").
 		Build());
 	
 	x = 3.0f;
