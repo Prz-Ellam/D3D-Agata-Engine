@@ -154,7 +154,7 @@ void Scene3D::OnInit() {
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Casa 2//rural5.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
-		Rotation(DX::XMFLOAT3(0.0f, 180.0f, 0.0f)).
+		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 2//diffuse.png").
 		NormalTexture("Assets//Models//Casa 2//normal.png").
@@ -449,7 +449,7 @@ void Scene3D::OnInit() {
 	z = 8.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//bench//bench.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) - 0.1f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
@@ -460,7 +460,7 @@ void Scene3D::OnInit() {
 	z = -3.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//bench//bench.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) - 0.1f, z)).
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//bench//wooden_bench_d.tga.png").
@@ -498,6 +498,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//campfire//barkTexture_COLOR.png").
 		NormalTexture("Assets//Models//campfire//barkTexture_NRM.png").
+		DefaultCollider(true).
 		Build());
 
 	x = -10.0f;
@@ -509,8 +510,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Wood_002.png").
 		NormalTexture("Assets//Models//Arbol//Wood_002_normal.tga.png").
-		AddCollider("Assets//Colliders//troncoC1.aabb").
-		AddCollider("Assets//Colliders//troncoC2.aabb").
+		AddCollider("Assets//Colliders//Arbol.aabb").
 		Build();
 
 	m_Tree[1] = Agata::StaticModelBuilder::GenerateParams().
@@ -581,7 +581,7 @@ void Scene3D::OnInit() {
 
 	m_Pole = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//poste.png",
 		"Assets//Images//Billboards//poste-normal.png",
-		DX::XMFLOAT3(-20, m_Terrain->GetHeight(-20, -30) + 4, -30), DX::XMFLOAT3(5, 4, 5));
+		DX::XMFLOAT3(-20, m_Terrain->GetHeight(-20, -30) + 3.5, -30), DX::XMFLOAT3(5, 4, 5));
 
 	m_FireShader = std::make_shared<Agata::Shader>("FireVertex.cso", "FirePixel.cso");
 	m_FireShader->Bind();
@@ -652,10 +652,10 @@ void Scene3D::Update() {
 
 		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
-		m_Window->SetTitle(
-			"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
-			"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
-			"Z: " + std::to_string(m_Camera->GetPosition().z));
+		//m_Window->SetTitle(
+		//	"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
+		//	"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
+		//	"Z: " + std::to_string(m_Camera->GetPosition().z));
 
 		float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
 		float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
@@ -753,10 +753,8 @@ void Scene3D::Update() {
 			}
 		}
 		
-		for (int i = 0; i < m_TreePositions.size(); i++) {
-			m_Tree[0]->CheckCollision(m_Camera);
-			m_Tree[1]->CheckCollision(m_Camera);
-		}
+		//m_Tree[0]->CheckCollision(m_Camera);
+		
 
 		if (contL == 2) {
 			m_VehicleEnable = true;
@@ -1000,7 +998,7 @@ void Scene3D::Render() {
 
 		m_TextShader->Bind();
 		m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
-		m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
+		m_Text->DrawString("+ Encuentra los 14 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
 		m_Text->DrawString("+ Repara el tractor (2 llaves)", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
 
 		m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
@@ -1105,8 +1103,11 @@ void Scene3D::RenderScene() {
 	}
 
 	for (int i = 0; i < m_TreePositions.size(); i++) {
-		m_Tree[0]->SetPosition(m_TreePositions[i]);
-		m_Tree[1]->SetPosition(m_TreePositions[i]);
+		m_Tree[0]->SetPositionC(m_TreePositions[i]);
+		m_Tree[1]->SetPositionC(m_TreePositions[i]);
+
+		m_Tree[0]->CheckCollision(m_Camera);
+
 		m_Tree[0]->OnRender();
 		m_Tree[1]->OnRender();
 	}
