@@ -369,7 +369,7 @@ void Scene3D::OnInit() {
 		Build());
 
 	x = 6.0f;//1
-	z = -42.0f;
+	z = -40.0f;
 	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -759,7 +759,7 @@ void Scene3D::Update() {
 		if (contL == 2) {
 			m_VehicleEnable = true;
 		}
-
+		
 		if (m_Cycle < 60) {
 			Audio::GetInstance().StopSound(1);
 			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"JuegoR")->second, 5, 0.035f);
@@ -831,6 +831,7 @@ void Scene3D::Update() {
 
 			switch (m_CharacterStates) {
 			case FORWARD: {
+				Audio::GetInstance().StopSound(4);
 				m_Forward->OnUpdate(m_Ts);
 				m_Forward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -838,6 +839,7 @@ void Scene3D::Update() {
 				break;
 			}
 			case IDLE: {
+				Audio::GetInstance().StopSound(4);
 				m_Idle->OnUpdate(m_Ts);
 				m_Idle->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -845,6 +847,7 @@ void Scene3D::Update() {
 				break;
 			}
 			case BACKWARD: {
+				Audio::GetInstance().StopSound(4);
 				m_Backward->OnUpdate(m_Ts);
 				m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -1190,7 +1193,7 @@ void Scene3D::Restart() {
 	m_Items[5]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
 	m_Items[6]->SetPositionC(DirectX::XMFLOAT3(8.0f, m_Terrain->GetHeight(8.0f, -36.0f), -36.0f));
 	m_Items[7]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
-	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -45.0f), -45.0f));
+	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -40.0f), -40.0f));
 	m_Items[9]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, 25.0f), 25.0f));
 	m_Items[10]->SetPositionC(DirectX::XMFLOAT3(-22.0f, m_Terrain->GetHeight(-22.0f, 5.0f), 5.0f));
 	m_Items[11]->SetPositionC(DirectX::XMFLOAT3(5.0f, m_Terrain->GetHeight(5.0f, 10.0f), 10.0f));
@@ -1202,5 +1205,9 @@ void Scene3D::Restart() {
 
 	m_Vehicle->SetPositionC(DirectX::XMFLOAT3(10.0f, m_Terrain->GetHeight(10.0f, -20.0f), -20.0f));
 	m_Vehicle->SetRotation(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	
+	Audio::GetInstance().StopSound(6);
+	Audio::GetInstance().StopSound(7);
+	Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
 
 }

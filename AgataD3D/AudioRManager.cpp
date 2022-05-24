@@ -19,5 +19,7 @@ void AudioRManager::ReleaseAudioFiles() {
 	Audio::GetInstance().ReleaseSound(Audio::GetInstance().GetSoundsMap().find((char*)"Recoger2")->second);
 	Audio::GetInstance().ReleaseSound(Audio::GetInstance().GetSoundsMap().find((char*)"Tractor")->second);
 	Audio::GetInstance().ReleaseSound(Audio::GetInstance().GetSoundsMap().find((char*)"JuegoR")->second);
+	Audio::GetInstance().ReleaseSound(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second);
+	Audio::GetInstance().ReleaseSound(Audio::GetInstance().GetSoundsMap().find((char*)"lose")->second);
 }
 
