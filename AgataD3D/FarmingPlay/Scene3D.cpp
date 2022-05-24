@@ -1198,7 +1198,7 @@ void Scene3D::Restart() {
 	m_Items[5]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
 	m_Items[6]->SetPositionC(DirectX::XMFLOAT3(8.0f, m_Terrain->GetHeight(8.0f, -36.0f), -36.0f));
 	m_Items[7]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
-	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -45.0f), -45.0f));
+	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -40.0f), -45.0f));
 	m_Items[9]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, 25.0f), 25.0f));
 	m_Items[10]->SetPositionC(DirectX::XMFLOAT3(-22.0f, m_Terrain->GetHeight(-22.0f, 5.0f), 5.0f));
 	m_Items[11]->SetPositionC(DirectX::XMFLOAT3(5.0f, m_Terrain->GetHeight(5.0f, 10.0f), 10.0f));
