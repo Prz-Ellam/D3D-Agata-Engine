@@ -811,6 +811,7 @@ void Scene3D::Update() {
 
 			switch (m_CharacterStates) {
 			case FORWARD: {
+				Audio::GetInstance().StopSound(4);
 				m_Forward->OnUpdate(m_Ts);
 				m_Forward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -818,6 +819,7 @@ void Scene3D::Update() {
 				break;
 			}
 			case IDLE: {
+				Audio::GetInstance().StopSound(4);
 				m_Idle->OnUpdate(m_Ts);
 				m_Idle->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -825,6 +827,7 @@ void Scene3D::Update() {
 				break;
 			}
 			case BACKWARD: {
+				Audio::GetInstance().StopSound(4);
 				m_Backward->OnUpdate(m_Ts);
 				m_Backward->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
