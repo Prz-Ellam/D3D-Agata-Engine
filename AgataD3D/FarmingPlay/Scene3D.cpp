@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Scene3D.h"
 #include "Joystick.h"
+#include <Audio.h>
+#include <AudioRManager.h>
 
 float lerp(float a, float b, float t) {
 	return a + t * (b - a);
@@ -19,6 +21,8 @@ Scene3D::~Scene3D() {
 }
 
 void Scene3D::OnInit() {
+	Audio::GetInstance().Init();
+	AudioRManager::GetInstance().LoadAudioFiles();
 
 	m_Window->Show();
 	m_Window->SetIcon("Agata.ico");
@@ -72,7 +76,7 @@ void Scene3D::OnInit() {
 		DirectX::XMFLOAT2(-0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
 	m_IconOL = std::make_shared<Agata::GUI>("Assets//Images//UI//objetosllave.png",
 		DirectX::XMFLOAT2(0.8f, -0.8f), DirectX::XMFLOAT2(0.3f, 0.3f));
-	m_Menu = std::make_shared<Agata::GUI>("Assets//Images//UI//Menu.jpg",
+	m_Menu = std::make_shared<Agata::GUI>("Assets//Images//UI//Menu.png",
 		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 
 	m_TextShader = std::make_shared<Agata::Shader>("TextVertex.cso", "TextPixel.cso");
@@ -609,7 +613,7 @@ void Scene3D::OnInit() {
 void Scene3D::OnRun() {
 
 	// Game Loop 
-
+	Audio::GetInstance().Update();
 	m_Timer.Start();
 	m_Dt = 1 / 60;
 	while (m_Running) {
@@ -624,6 +628,9 @@ void Scene3D::OnRun() {
 		m_Ts += m_Dt;
 
 		m_Timer.Restart();
+
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
+
 	
 	}
 
@@ -717,17 +724,23 @@ void Scene3D::Update() {
 
 		for (auto& Item : m_Items) {
 			if (Item->IsColliding(m_Camera) == true) {
+				Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Recoger")->second, 2, 0.035f);
+
 				Item->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
+
 				cont++;
 				m_ItemArea = true;
+
 			}
 		}
 
 		for (auto& Llave : m_Llaves) {
 			if (Llave->IsColliding(m_Camera) == true) {
+				Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Recoger2")->second, 3, 0.035f);
 				Llave->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
 				contL++;
 				m_ItemArea2 = true;
+
 			}
 		}
 
@@ -735,6 +748,13 @@ void Scene3D::Update() {
 			m_GameState = LOSE;
 
 		}
+
+		if (m_Cycle < 60) {
+			Audio::GetInstance().StopSound(1);
+			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"JuegoR")->second, 5, 0.035f);
+
+		}
+
 		else if (m_Cycle < 0 && cont < 14 && contL == 2) {
 			m_GameState = LOSE;
 		}
@@ -773,6 +793,7 @@ void Scene3D::Update() {
 
 		if (m_IsInVehicle) {
 			m_CharacterStates = SITTING;
+
 		}
 
 		if (m_IsThirdPerson) {
@@ -800,6 +821,7 @@ void Scene3D::Update() {
 				break;
 			}
 			case SITTING: {
+				Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Tractor")->second, 4, 0.25f);
 				m_Sitting->OnUpdate(m_Ts);
 				m_Sitting->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x,
 					m_Camera->GetPosition().y - 1.665f + 0.2f, m_Camera->GetPosition().z));
@@ -811,6 +833,7 @@ void Scene3D::Update() {
 		}
 
 		if (m_IsInVehicle) {
+
 			m_Vehicle->FollowCamera(m_Camera);
 		}
 
