@@ -999,7 +999,7 @@ void Scene3D::Render() {
 		m_TextShader->Bind();
 		m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
 		m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
-		m_Text->DrawString("+ Repara el tractor con 2 llaves", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
+		m_Text->DrawString("+ Repara el tractor (2 llaves)", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
 
 		m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
 		m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
