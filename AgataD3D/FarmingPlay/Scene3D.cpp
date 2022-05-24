@@ -359,7 +359,7 @@ void Scene3D::OnInit() {
 		Build());
 
 	x = 6.0f;//1
-	z = -42.0f;
+	z = -40.0f;
 	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
