@@ -1206,5 +1206,8 @@ void Scene3D::Restart() {
 
 	m_Vehicle->SetPositionC(DirectX::XMFLOAT3(10.0f, m_Terrain->GetHeight(10.0f, -20.0f), -20.0f));
 	m_Vehicle->SetRotation(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	
+	Audio::GetInstance().StopSound(5);
+	Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
 
 }
