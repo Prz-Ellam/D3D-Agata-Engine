@@ -755,18 +755,17 @@ void Scene3D::Update() {
 			m_Tree[0]->CheckCollision(m_Camera);
 			m_Tree[1]->CheckCollision(m_Camera);
 		}
-
-		if (m_Cycle < 0 && cont < 14 && contL < 2) {
-			m_GameState = LOSE;
-
-		}
-
+		
 		if (m_Cycle < 60) {
 			Audio::GetInstance().StopSound(1);
 			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"JuegoR")->second, 5, 0.035f);
 
 		}
 
+		if (m_Cycle < 0 && cont < 14 && contL < 2) {
+			m_GameState = LOSE;
+
+		}
 		else if (m_Cycle < 0 && cont < 14 && contL == 2) {
 			m_GameState = LOSE;
 		}
