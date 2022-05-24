@@ -266,7 +266,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Plants_Texture.png").
-	        DefaultCollider(true).
+		AddCollider("Assets//Colliders//planta1C.aabb").
 		Build());
 
 	x = -40.0f;//1
@@ -627,7 +627,9 @@ void Scene3D::OnRun() {
 
 		m_Timer.Restart();
 
-		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.050f);
+		if (m_GameState == GAMEPLAY) {
+			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.050f);
+		}
 	}
 
 }
@@ -650,10 +652,10 @@ void Scene3D::Update() {
 
 		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
-		//m_Window->SetTitle(
-		//	"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
-		//	"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
-		//	"Z: " + std::to_string(m_Camera->GetPosition().z));
+		m_Window->SetTitle(
+			"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
+			"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
+			"Z: " + std::to_string(m_Camera->GetPosition().z));
 
 		float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
 		float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
@@ -1007,6 +1009,7 @@ void Scene3D::Render() {
 		break;
 	}
 	case WIN: {
+		Audio::GetInstance().StopSound(4);
 		Audio::GetInstance().StopSound(5);
 		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second, 6, 0.35f);
 		m_GUIShader->Bind();
@@ -1014,6 +1017,7 @@ void Scene3D::Render() {
 		break;
 	}
 	case LOSE: {
+		Audio::GetInstance().StopSound(4);
 		Audio::GetInstance().StopSound(5);
 		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"lose")->second, 7, 0.25f);
 		m_GUIShader->Bind();
@@ -1188,17 +1192,18 @@ void Scene3D::Restart() {
 	m_Items[0]->SetPositionC(DirectX::XMFLOAT3(-40.0f, m_Terrain->GetHeight(-40.0f, -33.0f), -33.0f));
 	m_Items[1]->SetPositionC(DirectX::XMFLOAT3(-34.0f, m_Terrain->GetHeight(-34.0f, 25.0f), 25.0f));
 	m_Items[2]->SetPositionC(DirectX::XMFLOAT3(14.0f, m_Terrain->GetHeight(14.0f, -10.0f), -10.0f));
-	m_Items[3]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, -25.0f), -25.0f));
+	m_Items[3]->SetPositionC(DirectX::XMFLOAT3(14.0f, m_Terrain->GetHeight(14.0f, -25.0f), -25.0f));
 	m_Items[4]->SetPositionC(DirectX::XMFLOAT3(-12.0f, m_Terrain->GetHeight(-12.0f, 25.0f), 25.0f));
 	m_Items[5]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
 	m_Items[6]->SetPositionC(DirectX::XMFLOAT3(8.0f, m_Terrain->GetHeight(8.0f, -36.0f), -36.0f));
-	m_Items[7]->SetPositionC(DirectX::XMFLOAT3(-20.0f, m_Terrain->GetHeight(-20.0f, 4.0f), 4.0f));
-	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -40.0f), -40.0f));
-	m_Items[9]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, 25.0f), 25.0f));
-	m_Items[10]->SetPositionC(DirectX::XMFLOAT3(-22.0f, m_Terrain->GetHeight(-22.0f, 5.0f), 5.0f));
-	m_Items[11]->SetPositionC(DirectX::XMFLOAT3(5.0f, m_Terrain->GetHeight(5.0f, 10.0f), 10.0f));
-	m_Items[12]->SetPositionC(DirectX::XMFLOAT3(2.0f, m_Terrain->GetHeight(2.0f, -10.0f), -10.0f));
-	m_Items[13]->SetPositionC(DirectX::XMFLOAT3(-50.0f, m_Terrain->GetHeight(-50.0f, -35.0f), -35.0f));
+
+	m_Items[7]->SetPositionC(DirectX::XMFLOAT3(6.0f, m_Terrain->GetHeight(6.0f, -40.0f), -40.0f));
+	m_Items[8]->SetPositionC(DirectX::XMFLOAT3(-14.0f, m_Terrain->GetHeight(-14.0f, 25.0f), 25.0f));
+	m_Items[9]->SetPositionC(DirectX::XMFLOAT3(-22.0f, m_Terrain->GetHeight(-22.0f, 5.0f), 5.0f));
+	m_Items[10]->SetPositionC(DirectX::XMFLOAT3(5.0f, m_Terrain->GetHeight(5.0f, 10.0f), 10.0f));
+	m_Items[11]->SetPositionC(DirectX::XMFLOAT3(2.0f, m_Terrain->GetHeight(2.0f, -10.0f), -10.0f));
+	m_Items[12]->SetPositionC(DirectX::XMFLOAT3(-50.0f, m_Terrain->GetHeight(-50.0f, -35.0f), -35.0f));
+	m_Items[13]->SetPositionC(DirectX::XMFLOAT3(32.0f, m_Terrain->GetHeight(32.0f, 20.0f), 20.0f));
 
 	m_Llaves[0]->SetPositionC(DirectX::XMFLOAT3(74.0f, m_Terrain->GetHeight(74.0f, 25.0f), 25.0f));
 	m_Llaves[1]->SetPositionC(DirectX::XMFLOAT3(74.0f, m_Terrain->GetHeight(74.0f, 10.0f), 10.0f));
