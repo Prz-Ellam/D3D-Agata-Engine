@@ -1007,11 +1007,15 @@ void Scene3D::Render() {
 		break;
 	}
 	case WIN: {
+		Audio::GetInstance().StopSound(5);
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second, 6, 0.25f);
 		m_GUIShader->Bind();
 		m_Win->OnRender();
 		break;
 	}
 	case LOSE: {
+		Audio::GetInstance().StopSound(5);
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"lose")->second, 7, 0.25f);
 		m_GUIShader->Bind();
 		m_Icon->OnRender();
 		break;
@@ -1207,7 +1211,8 @@ void Scene3D::Restart() {
 	m_Vehicle->SetPositionC(DirectX::XMFLOAT3(10.0f, m_Terrain->GetHeight(10.0f, -20.0f), -20.0f));
 	m_Vehicle->SetRotation(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	
-	Audio::GetInstance().StopSound(5);
+	Audio::GetInstance().StopSound(6);
+	Audio::GetInstance().StopSound(7);
 	Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.035f);
 
 }
