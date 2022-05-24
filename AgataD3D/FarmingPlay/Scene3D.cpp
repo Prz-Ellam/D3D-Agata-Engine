@@ -239,6 +239,10 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//farm//FarmUV.png").
+	        AddCollider("Assets//Colliders//farmC9.aabb").
+		AddCollider("Assets//Colliders//farmC10.aabb").
+		AddCollider("Assets//Colliders//farmC11.aabb").
+		AddCollider("Assets//Colliders//farmC15.aabb").
 		Build());
 	
 	x = 3.0f;
@@ -249,6 +253,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Plants_Texture.png").
+	        DefaultCollider(true).
 		Build());
 
 	x = -40.0f;//1
@@ -354,7 +359,7 @@ void Scene3D::OnInit() {
 		Build());
 
 	x = 6.0f;//1
-	z = -45.0f;
+	z = -42.0f;
 	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -506,6 +511,8 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Wood_002.png").
 		NormalTexture("Assets//Models//Arbol//Wood_002_normal.tga.png").
+		AddCollider("Assets//Colliders//troncoC1.aabb").
+		AddCollider("Assets//Colliders//troncoC2.aabb").
 		Build();
 
 	m_Tree[1] = Agata::StaticModelBuilder::GenerateParams().
@@ -742,6 +749,11 @@ void Scene3D::Update() {
 				m_ItemArea2 = true;
 
 			}
+		}
+		
+		for (int i = 0; i < m_TreePositions.size(); i++) {
+			m_Tree[0]->CheckCollision(m_Camera);
+			m_Tree[1]->CheckCollision(m_Camera);
 		}
 
 		if (m_Cycle < 0 && cont < 14 && contL < 2) {
