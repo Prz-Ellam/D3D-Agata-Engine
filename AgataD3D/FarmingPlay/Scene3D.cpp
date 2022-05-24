@@ -1008,7 +1008,7 @@ void Scene3D::Render() {
 	}
 	case WIN: {
 		Audio::GetInstance().StopSound(5);
-		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second, 6, 0.25f);
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second, 6, 0.35f);
 		m_GUIShader->Bind();
 		m_Win->OnRender();
 		break;
