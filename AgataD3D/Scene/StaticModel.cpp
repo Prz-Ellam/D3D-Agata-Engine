@@ -52,6 +52,16 @@ namespace Agata {
 		}
 
 	}
+
+	void StaticModel::CheckCollision(std::unique_ptr<Camera>& camera, const BoxCollider& pCollider) {
+
+		for (auto& collider : m_Colliders) {
+			if (collider.IsColliding(pCollider)) {
+				camera->Back();
+			}
+		}
+
+	}
 	
 	void StaticModel::SetPositionC(const DX::XMFLOAT3& position) {
 
@@ -85,6 +95,7 @@ namespace Agata {
 
 		m_Material->BindDiffuseTexture(0);
 		m_Material->BindNormalTexture(1);
+		m_Material->BindSpecularTexture(2);
 
 		Renderer::DrawIndexes(m_Mesh.get());
 

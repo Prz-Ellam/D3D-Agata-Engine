@@ -12,6 +12,7 @@ namespace Agata {
 
 	HLSL struct GUIBuffer {
 		DX::XMMATRIX c_Model;
+		FLOAT c_Alpha;
 	};
 
 	class GUI : public Drawable {
@@ -25,12 +26,14 @@ namespace Agata {
 		GUI& operator=(GUI&& other) noexcept = delete;
 
 		void OnRender() override;
+		void OnRender(bool range, float dt);
 	private:
 		std::shared_ptr<Mesh> m_Mesh;
 		std::shared_ptr<ConstantBuffer> m_CBO;
 		Texture2D m_Texture;
 		GUIBuffer m_Buffer;
-
+		float m_Time = 0.0f;
+		float m_Alpha = 0.0f;
 	};
 
 }

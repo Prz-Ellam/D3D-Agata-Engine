@@ -16,6 +16,7 @@ cbuffer PS_CB : register(b1) {
 
 Texture2D tex : register(t0);
 Texture2D t_NormalMap : register(t1);
+Texture2D t_SpecularMap : register(t2);
 SamplerState samplerX : register(s0);
 
 float4 main(PSInput input) : SV_TARGET {
@@ -34,9 +35,6 @@ float4 main(PSInput input) : SV_TARGET {
 
 	//float3 unitNormal = normalize(input.normal);
 
-
-
-
 	// Diffuse Light
 	float diffuseScalar = dot(unitNormal, normalize(input.toLightVector));
 	diffuseScalar = max(diffuseScalar, 0.0f);
@@ -50,8 +48,8 @@ float4 main(PSInput input) : SV_TARGET {
 	float specularScalar = dot(reflectLightDir, normalize(input.toCameraVector));
 	specularScalar = max(specularScalar, 0.0f);
 	specularScalar = pow(specularScalar, c_Shininess);
-	//float4 specularMap = texture(u_SpecularMap, fs_TexCoords);
-	float4 specular = specularScalar * c_SpecularMaterial * input.lightColour;// *vec3(specularMap);
+	float4 specularMap = t_SpecularMap.Sample(samplerX, input.uv);
+	float4 specular = specularScalar * c_SpecularMaterial * input.lightColour * specularMap;
 
 
 	clip(texColour.a < 0.5f ? -1 : 1); // Discard in GLSL

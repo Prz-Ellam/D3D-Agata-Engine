@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Scene3D.h"
-#include "Joystick.h"
+#include <Audio.h>
+#include <AudioRManager.h>
 
 float lerp(float a, float b, float t) {
 	return a + t * (b - a);
@@ -20,15 +21,18 @@ Scene3D::~Scene3D() {
 
 void Scene3D::OnInit() {
 
+	Audio::GetInstance().Init();
+	AudioRManager::GetInstance().LoadAudioFiles();
+
 	m_Window->Show();
 	m_Window->SetIcon("Agata.ico");
 	m_Running = true;
 
-	 Agata::PerspectiveCameraProps properties = {
-		45.0f,
-		static_cast<float>(m_Window->GetWidth()) / m_Window->GetHeight(),
-		0.1f,
-		1000.0f
+	Agata::PerspectiveCameraProps properties = {
+	   45.0f,
+	   static_cast<float>(m_Window->GetWidth()) / m_Window->GetHeight(),
+	   0.1f,
+	   1000.0f
 	};
 	m_Camera = std::make_unique<Agata::Camera>(properties, 60.0f, 800.0f);
 
@@ -56,14 +60,13 @@ void Scene3D::OnInit() {
 		.TilingFactor(40.0f)
 		.Build();
 
-
 	m_GUIShader = std::make_shared<Agata::Shader>("GUIVertex.cso", "GUIPixel.cso");
 	m_GUIShader->Bind();
 
 	m_GUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Observar.png", 
-		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.5f));
+		DirectX::XMFLOAT2(0.0f, -0.5f), DirectX::XMFLOAT2(0.3f, 0.3f));
 	m_VehicleGUI = std::make_shared<Agata::GUI>("Assets//Images//UI//Subir.png",
-		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.5f));
+		DirectX::XMFLOAT2(0.0f, -0.5f), DirectX::XMFLOAT2(0.3f, 0.3f));
 	m_Icon = std::make_shared<Agata::GUI>("Assets//Images//UI//lose.png",
 		DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	m_Win = std::make_shared<Agata::GUI>("Assets//Images//UI//win.png",
@@ -81,7 +84,6 @@ void Scene3D::OnInit() {
 	m_Text = std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
 	m_cronometro= std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
     m_cantidad= std::make_shared<Agata::Text>("Assets//Images//Fonts//Fixedsys16x28.png");
-
 
 	m_SkeletalModelShader = std::make_shared<Agata::Shader>("SkeletalModelVertex.cso", "SkeletalModelPixel.cso");
 	m_SkeletalModelShader->Bind();
@@ -121,12 +123,11 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//Personaje//CharacterDiffuse.jpg").
 		Build();
 
-
 	m_StaticModelShader = std::make_shared<Agata::Shader>("StaticModelVertex.cso", "StaticModelPixel.cso");
 	m_StaticModelShader->Bind();
 
 	x = 10.0f;
-	z = 0.0f;
+	z = -2.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Casa 1//rural1.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -137,15 +138,27 @@ void Scene3D::OnInit() {
 		DefaultCollider(true).
 		Build());
 
-	x = 10.0f;
-	z = 20.0f;
+	x = 10-2.7f;
+	z = -1.3f;
+	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
+		ModelPath("Assets//Models//Cuadro//Cuadro.obj").
+		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
+		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
+		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
+		DiffuseTexture("Assets//Models//Cuadro//texture.jpg").
+		DefaultCollider(true).
+		Build());
+
+	x = 0.0f;
+	z = 15.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//Casa 2//rural5.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
-		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
+		Rotation(DX::XMFLOAT3(0.0f, 180.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Casa 2//diffuse.png").
 		NormalTexture("Assets//Models//Casa 2//normal.png").
+		SpecularTexture("Assets//Models//Casa 2//specular.jpeg").
 		DefaultCollider(true).
 		Build());
 
@@ -158,6 +171,7 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//Telescopio//albedo.png").
 		NormalTexture("Assets//Models//Telescopio//normal.png").
+		DefaultCollider(true).
 		Build();
 
 	DirectX::XMFLOAT3 min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
@@ -178,6 +192,10 @@ void Scene3D::OnInit() {
 	min = DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z);
 	m_VehicleCollider = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 4, min.y, min.z - 4),
 		                                   DirectX::XMFLOAT3(min.x + 4, min.y, min.z + 4));
+
+	m_VehicleCollision = Agata::BoxCollider(DirectX::XMFLOAT3(min.x - 2, min.y, min.z - 2),
+		                                    DirectX::XMFLOAT3(min.x + 2, min.y, min.z + 2));
+
 	x = 20.0f;
 	z = -40.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -193,7 +211,7 @@ void Scene3D::OnInit() {
 		Build());
 
 	x = -17.0f;
-	z = -45.0f;
+	z = -49.0f;
 	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//church//church.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -235,10 +253,9 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//farm//FarmUV.png").
-		AddCollider("Assets//Colliders//farmC9.aabb").
-		AddCollider("Assets//Colliders//farmC10.aabb").
-		AddCollider("Assets//Colliders//farmC11.aabb").
-		AddCollider("Assets//Colliders//farmC15.aabb").
+		AddCollider("Assets//Colliders//Farm_1.aabb").
+	    AddCollider("Assets//Colliders//Farm_2.aabb").
+		AddCollider("Assets//Colliders//Farm_3.aabb").
 		Build());
 	
 	x = 3.0f;
@@ -249,6 +266,7 @@ void Scene3D::OnInit() {
 		Rotation(DX::XMFLOAT3(0.0f, 0.0f, 0.0f)).
 		Scale(DX::XMFLOAT3(1.0f, 1.0f, 1.0f)).
 		DiffuseTexture("Assets//Models//plants//Plants_Texture.png").
+	        DefaultCollider(true).
 		Build());
 
 	x = -40.0f;//1
@@ -317,7 +335,6 @@ void Scene3D::OnInit() {
 		AddCollider("Assets//Colliders//planta4C.aabb").
 		Build());
 
-
 	x = 8.0f; //7
 	z = -36.0f;
 	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -329,7 +346,6 @@ void Scene3D::OnInit() {
 		AddCollider("Assets//Colliders//planta5C.aabb").
 		Build());
 	
-	
 	x = 74.0f; //1
 	z = 25.0f;
 	m_Llaves.push_back(Agata::StaticModelBuilder::GenerateParams().
@@ -340,7 +356,6 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//llave2//wrenchExport_lambert2_R.png").
 		AddCollider("Assets//Colliders//llaveC.aabb").
 		Build());
-
 
 	x = 74.0f; //2
 	z = 10.0f;
@@ -354,7 +369,7 @@ void Scene3D::OnInit() {
 		Build());
 
 	x = 6.0f;//1
-	z = -45.0f;
+	z = -42.0f;
 	m_Items.push_back(Agata::StaticModelBuilder::GenerateParams().
 		ModelPath("Assets//Models//tuerca//tuerca.obj").
 		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z), z)).
@@ -485,18 +500,6 @@ void Scene3D::OnInit() {
 		NormalTexture("Assets//Models//campfire//barkTexture_NRM.png").
 		Build());
 
-	x = 10-2.7f;
-	z = 0.8f;
-	m_Models.push_back(Agata::StaticModelBuilder::GenerateParams().
-		ModelPath("Assets//Models//Cuadro//Cuadro.obj").
-		Position(DX::XMFLOAT3(x, m_Terrain->GetHeight(x, z) + 0.8f, z)).
-		Rotation(DX::XMFLOAT3(0.0f, 90.0f, 0.0f)).
-		Scale(DX::XMFLOAT3(-1.2f, 1.0f, 1.0f)).
-		DiffuseTexture("Assets//Models//Cuadro//texture.jpg").
-		DefaultCollider(true).
-		Build());
-
-	
 	x = -10.0f;
 	z = 20.0f;
 	m_Tree[0] = Agata::StaticModelBuilder::GenerateParams().
@@ -506,6 +509,8 @@ void Scene3D::OnInit() {
 		Scale(DX::XMFLOAT3(5.0f, 5.0f, 5.0f)).
 		DiffuseTexture("Assets//Models//Arbol//Wood_002.png").
 		NormalTexture("Assets//Models//Arbol//Wood_002_normal.tga.png").
+		AddCollider("Assets//Colliders//troncoC1.aabb").
+		AddCollider("Assets//Colliders//troncoC2.aabb").
 		Build();
 
 	m_Tree[1] = Agata::StaticModelBuilder::GenerateParams().
@@ -516,7 +521,6 @@ void Scene3D::OnInit() {
 		DiffuseTexture("Assets//Models//Arbol//Bitmap2Material_3_Base_Color.tga.png").
 		NormalTexture("Assets//Models//Arbol//Bitmap2Material_3_Normal.tga.png").
 		Build();
-
 
 	m_SkyboxShader = std::make_shared<Agata::Shader>("SkyboxVertex.cso", "SkyboxPixel.cso");
 	m_SkyboxShader->Bind();
@@ -558,15 +562,6 @@ void Scene3D::OnInit() {
 		m_Skybox = std::make_shared<Agata::Skybox>(morning, day, sunset, night, 500.0f, 1.0f);
 	} 
 	
-
-
-	m_FBO = new Agata::Framebuffer(m_Window->GetWidth(), m_Window->GetHeight());
-
-	m_QuadShader =  std::make_shared<Agata::Shader>("QuadVertex.cso", "QuadPixel.cso");
-	m_QuadShader->Bind();
-
-	m_Quad = std::make_shared<Agata::Quad>();
-
 	m_WaterShader = std::make_shared<Agata::Shader>("WaterVertex.cso", "WaterPixel.cso");
 	m_WaterShader->Bind();
 	m_Water = std::make_shared<Agata::Water>(DX::XMFLOAT3(53, 3.5, 0), DX::XMFLOAT3(0, 0, 0),
@@ -574,7 +569,6 @@ void Scene3D::OnInit() {
 		"Assets//Images//Water//normalMap.png", 
 		m_Window->GetWidth(), m_Window->GetHeight());
 
-	
 	m_BillboardShader = std::make_shared<Agata::Shader>("BillboardVertex.cso", "BillboardPixel.cso");
 	m_BillboardShader->Bind();
 
@@ -584,6 +578,10 @@ void Scene3D::OnInit() {
 	m_Tree2 = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//tree2.png",
 		"Assets//Images//Billboards//tree2Norm.png",
 		DX::XMFLOAT3(30, m_Terrain->GetHeight(30, -40) + 5, -40), DX::XMFLOAT3(5, 5, 5));
+
+	m_Pole = std::make_shared<Agata::Billboard>("Assets//Images//Billboards//poste.png",
+		"Assets//Images//Billboards//poste-normal.png",
+		DX::XMFLOAT3(-20, m_Terrain->GetHeight(-20, -30) + 4, -30), DX::XMFLOAT3(5, 4, 5));
 
 	m_FireShader = std::make_shared<Agata::Shader>("FireVertex.cso", "FirePixel.cso");
 	m_FireShader->Bind();
@@ -613,7 +611,7 @@ void Scene3D::OnInit() {
 void Scene3D::OnRun() {
 
 	// Game Loop 
-
+	Audio::GetInstance().Update();
 	m_Timer.Start();
 	m_Dt = 1 / 60;
 	while (m_Running) {
@@ -628,7 +626,8 @@ void Scene3D::OnRun() {
 		m_Ts += m_Dt;
 
 		m_Timer.Restart();
-	
+
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Juego")->second, 1, 0.050f);
 	}
 
 }
@@ -651,10 +650,10 @@ void Scene3D::Update() {
 
 		(m_Cycle > -180) ? m_Cycle -= 2.0f * m_Dt : m_Cycle = 180.0f;
 
-		m_Window->SetTitle(
-			"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
-			"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
-			"Z: " + std::to_string(m_Camera->GetPosition().z));
+		//m_Window->SetTitle(
+		//	"X: " + std::to_string(m_Camera->GetPosition().x) + ", " +
+		//	"Y: " + std::to_string(m_Camera->GetPosition().y) + ", " +
+		//	"Z: " + std::to_string(m_Camera->GetPosition().z));
 
 		float y = 400 * sin(DX::XMConvertToRadians(m_Cycle));
 		float z = 400 * cos(DX::XMConvertToRadians(m_Cycle));
@@ -693,7 +692,12 @@ void Scene3D::Update() {
 		m_Sitting->GetMaterial()->SetAmbient(DirectX::XMFLOAT4(I, I, I, 1.0f));
 		m_Sitting->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
 
+		m_Tree[0]->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+		m_Tree[1]->GetMaterial()->SetDiffuse(DirectX::XMFLOAT4(I + 0.1f, I + 0.1f, I + 0.1f, 1.0f));
+
+
 		m_Camera->Move(m_Dt);
+
 
 		if (m_VehicleCollider.IsColliding(m_Camera->GetPosition()) && m_VehicleEnable && !m_IsInVehicle) {
 			m_VehicleArea = true;
@@ -709,18 +713,29 @@ void Scene3D::Update() {
 			m_SpyGlassArea = false;
 		}
 
-		m_VehicleCollider.SetMinX(m_Vehicle->GetPosition().x - 5.0f);
-		m_VehicleCollider.SetMinZ(m_Vehicle->GetPosition().z - 5.0f);
-		m_VehicleCollider.SetMaxX(m_Vehicle->GetPosition().x + 5.0f);
-		m_VehicleCollider.SetMaxZ(m_Vehicle->GetPosition().z + 5.0f);
+		m_VehicleCollider.SetMinX(m_Vehicle->GetPosition().x - 4.0f);
+		m_VehicleCollider.SetMinZ(m_Vehicle->GetPosition().z - 4.0f);
+		m_VehicleCollider.SetMaxX(m_Vehicle->GetPosition().x + 4.0f);
+		m_VehicleCollider.SetMaxZ(m_Vehicle->GetPosition().z + 4.0f);
+
+		m_VehicleCollision.SetMinX(m_Vehicle->GetPosition().x - 2.0f);
+		m_VehicleCollision.SetMinZ(m_Vehicle->GetPosition().z - 2.0f);
+		m_VehicleCollision.SetMaxX(m_Vehicle->GetPosition().x + 2.0f);
+		m_VehicleCollision.SetMaxZ(m_Vehicle->GetPosition().z + 2.0f);
 
 		for (auto& model : m_Models) {
 			model->CheckCollision(m_Camera);
 		}
 
+		m_Telescope->CheckCollision(m_Camera);
+
+		if (!m_IsInVehicle && m_VehicleCollision.IsColliding(m_Camera->GetPosition())) {
+			m_Camera->Back();
+		}
 
 		for (auto& Item : m_Items) {
 			if (Item->IsColliding(m_Camera) == true) {
+				Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Recoger")->second, 2, 0.035f);
 				Item->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
 				cont++;
 				m_ItemArea = true;
@@ -729,24 +744,29 @@ void Scene3D::Update() {
 
 		for (auto& Llave : m_Llaves) {
 			if (Llave->IsColliding(m_Camera) == true) {
+				Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Recoger2")->second, 3, 0.035f);
 				Llave->SetPositionC(DirectX::XMFLOAT3(500.0f, 0.0f, 500.0f));
 				contL++;
 				m_ItemArea2 = true;
 			}
 		}
+		
+		for (int i = 0; i < m_TreePositions.size(); i++) {
+			m_Tree[0]->CheckCollision(m_Camera);
+			m_Tree[1]->CheckCollision(m_Camera);
+		}
 
-		if (m_Cycle < 0 && cont < 14 && contL < 2) {
-			m_GameState = LOSE;
-
-		}
-		else if (m_Cycle < 0 && cont < 14 && contL == 2) {
-			m_GameState = LOSE;
-		}
-		else if (m_Cycle < 0 && cont == 14 && contL < 2) {
-			m_GameState = LOSE;
-		}
-		else if (contL == 2) {
+		if (contL == 2) {
 			m_VehicleEnable = true;
+		}
+
+		if (m_Cycle < 60) {
+			Audio::GetInstance().StopSound(1);
+			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"JuegoR")->second, 5, 0.035f);
+		}
+
+		if (m_Cycle < 0 && (cont < 14 || contL < 2)) {
+			m_GameState = LOSE;
 		}
 
 		//tractor
@@ -762,6 +782,28 @@ void Scene3D::Update() {
 
 		m_Tree1->OnUpdate(m_Dt);
 		m_Tree2->OnUpdate(m_Dt);
+		m_Pole->OnUpdate(m_Dt);
+
+		bool change = false;
+		if (m_Joystick.Present(0)) {
+
+			Agata::JoystickState state = m_Joystick.GetState();
+
+			if (state.thumbLY > 0.19 || state.thumbLY < -0.19) {
+
+				if (state.thumbLY > 0.0f) {
+					m_CharacterStates = FORWARD;
+				}
+				else {
+					m_CharacterStates = BACKWARD;
+				}
+				change = true;
+			}
+			else {
+				m_CharacterStates = IDLE;
+			}
+
+		}
 
 		if (GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) {
 			m_CharacterStates = FORWARD;
@@ -771,12 +813,18 @@ void Scene3D::Update() {
 		}
 
 		if (!(GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) &&
-			!(GetAsyncKeyState(static_cast<int>('S')) & 1 << 16)) {
+			!(GetAsyncKeyState(static_cast<int>('S')) & 1 << 16) &&
+			change == false) {
 			m_CharacterStates = IDLE;
 		}
 
 		if (m_IsInVehicle) {
 			m_CharacterStates = SITTING;
+			Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Tractor")->second, 4, 0.25f);
+			m_Vehicle->FollowCamera(m_Camera);
+		}
+		else {
+			Audio::GetInstance().StopSound(4);
 		}
 
 		if (m_IsThirdPerson) {
@@ -813,11 +861,6 @@ void Scene3D::Update() {
 			}
 
 		}
-
-		if (m_IsInVehicle) {
-			m_Vehicle->FollowCamera(m_Camera);
-		}
-
 
 		if (m_Cycle < MORNING_TO_DAY_MIN && m_Cycle > MORNING_TO_DAY_MAX) {
 
@@ -897,10 +940,15 @@ void Scene3D::Render() {
 	case GAMEPLAY: {
 		float distance = 2 * (m_Camera->GetY() - m_Water->GetPosition().y);
 		m_Camera->ChangePitchDirection();
-		//m_Camera->MoveHeight(distance);
-		m_Camera->Update(m_Terrain);
-		//m_Camera->MoveHeight(-distance);
 
+		if (m_IsThirdPerson) {
+			m_Camera->MoveHeight(-distance);
+		}
+		m_Camera->Update(m_Terrain);
+
+		if (m_IsThirdPerson) {
+			m_Camera->MoveHeight(distance);
+		}
 
 		Agata::Renderer::Clear(1.0f, 1.0f, 1.0f, 1.0f);
 		Agata::Renderer::BeginScene(m_Camera, m_Light);
@@ -911,7 +959,7 @@ void Scene3D::Render() {
 
 		// Agata::Renderer::EndScene();
 
-		//m_Camera->MoveHeight(distance);
+		m_Camera->MoveHeight(-distance);
 		m_Camera->ChangePitchDirection();
 		m_Camera->Update(m_Terrain);
 
@@ -923,8 +971,6 @@ void Scene3D::Render() {
 		m_Water->EndRefraction();
 
 		// Agata::Renderer::EndScene();
-
-
 
 		Agata::Renderer::BeginScene(m_Camera, m_Light);
 		Agata::Renderer::Clear(0.2f, 0.2f, 0.2f, 1.0f);
@@ -940,64 +986,44 @@ void Scene3D::Render() {
 		}
 
 		m_GUIShader->Bind();
-		if (m_SpyGlassArea) {
-			m_GUI->OnRender();
-		}
+		m_GUI->OnRender(m_SpyGlassArea, m_Dt);
 
-		if (m_VehicleArea) {
-			m_VehicleGUI->OnRender();
-		}
-
+		m_VehicleGUI->OnRender(m_VehicleArea, m_Dt);
+		
 		m_IconO->OnRender();
 		m_IconOL->OnRender();
 
 		m_TextShader->Bind();
 		m_cronometro->DrawString(std::to_string(m_Cycle), DirectX::XMFLOAT2(0.3, 0.9), 1.0f);
 		m_Text->DrawString("+ Encuentra los 16 recursos", DirectX::XMFLOAT2(-0.9, 0.9), 0.5f);
-		m_Text->DrawString("+ Repara el tractor", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
+		m_Text->DrawString("+ Repara el tractor con 2 llaves", DirectX::XMFLOAT2(-0.9, 0.8), 0.5f);
 
-		//if (m_ItemArea) {
-			m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
-		//}
+		m_cantidad->DrawString(std::to_string(cont), DirectX::XMFLOAT2(-0.6, -0.8), 1.0f);
+		m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
 
-		//if (m_ItemArea2) {
-			m_cantidad->DrawString(std::to_string(contL), DirectX::XMFLOAT2(0.6, -0.8), 1.0f);
-		//}
-
-		//m_FBO->UnbindFramebuffer();
-
-		//Agata::Renderer::Clear(1.0f, 0.0f, 0.0f, 1.0f);
-
-		//m_QuadShader->Bind();
-		//m_FBO->BindTexture(0);
-		//m_Quad->Bind();
 		break;
 	}
 	case WIN: {
+		Audio::GetInstance().StopSound(5);
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"win")->second, 6, 0.35f);
 		m_GUIShader->Bind();
 		m_Win->OnRender();
 		break;
 	}
 	case LOSE: {
+		Audio::GetInstance().StopSound(5);
+		Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"lose")->second, 7, 0.25f);
 		m_GUIShader->Bind();
 		m_Icon->OnRender();
 		break;
 	}
 	}
 
-
-	//m_FBO->BindFrameBuffer();
-	//m_FBO->Clear(0, 1, 0, 0);
-
-	
-
-
 }
 
 void Scene3D::OnRelease() {
 
 	// Release Models, Shaders, Textures, Resources
-	delete m_FBO;
 
 }
 
@@ -1018,27 +1044,33 @@ void Scene3D::OnKeyEvent(Agata::KeyEvent e) {
 		m_GameState = GAMEPLAY;
 	}
 
-	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press && !m_IsZoom) {
+	if (e.GetKeyCode() == Agata::KeyCode::KeyC && e.GetKeyAction() == Agata::KeyAction::Press 
+		&& !m_IsZoom && m_GameState == GAMEPLAY) {
 		m_Camera->TogglePerson();
 		m_IsThirdPerson = !m_IsThirdPerson;
 	}
 
 	if (e.GetKeyCode() == Agata::KeyCode::KeyV && e.GetKeyAction() == Agata::KeyAction::Press &&
-		(m_VehicleArea || m_IsInVehicle)) {
+		(m_VehicleArea || m_IsInVehicle) && m_GameState == GAMEPLAY) {
 		m_IsInVehicle = !m_IsInVehicle;
 		if (m_IsInVehicle) {
 			m_Camera->SetSpeed(90.0f);
 		}
 		else {
+			m_Camera->SetPosition(DirectX::XMFLOAT3(m_Camera->GetPosition().x - 3.0f, 
+				m_Camera->GetPosition().y,
+				m_Camera->GetPosition().z - 3.0f));
 			m_Camera->SetSpeed(60.0f);
 		}
 	}
 
-	if (e.GetKeyCode() == Agata::KeyCode::KeyR && e.GetKeyAction() == Agata::KeyAction::Press) {//reiniciar
+	if (e.GetKeyCode() == Agata::KeyCode::KeyR && e.GetKeyAction() == Agata::KeyAction::Press
+		&& (m_GameState == WIN || m_GameState == LOSE)) {//reiniciar
 		Restart();
 	}
 
-	if (e.GetKeyCode() == Agata::KeyCode::KeyZ && e.GetKeyAction() == Agata::KeyAction::Press) {
+	if (e.GetKeyCode() == Agata::KeyCode::KeyZ && e.GetKeyAction() == Agata::KeyAction::Press &&
+		m_GameState == GAMEPLAY) {
 		m_IsZoom = !m_IsZoom;
 		m_Camera->SetPosition(DirectX::XMFLOAT3(-10.32f, m_Terrain->GetHeight(-10.32f, -23.0f), -23.0f));
 		if (m_IsZoom) {
@@ -1073,7 +1105,7 @@ void Scene3D::RenderScene() {
 	}
 
 	for (auto& Item : m_Items) {
-			Item->OnRender();
+		Item->OnRender();
 	}
 
 	for (auto& Llave : m_Llaves) {
@@ -1089,11 +1121,10 @@ void Scene3D::RenderScene() {
 	m_BillboardShader->Bind();
 	m_Tree1->OnRender();
 	m_Tree2->OnRender();
+	m_Pole->OnRender();
 
 	m_SkeletalModelShader->Bind();
-
 	if (m_IsThirdPerson) {
-
 		switch (m_CharacterStates) {
 		case FORWARD: {
 			m_Forward->OnRender();
@@ -1112,9 +1143,7 @@ void Scene3D::RenderScene() {
 			break;
 		}
 		}
-		
 	}
-
 
 	m_FireShader->Bind();
 	m_Fire->OnRender();

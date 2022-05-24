@@ -43,20 +43,16 @@ namespace Agata {
 		m_ForwardAcceleration = 0.0f;
 		m_RightAcceleration = 0.0f;
 		if (GetAsyncKeyState(static_cast<int>('W')) & 1 << 16) {
-			//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 			m_ForwardAcceleration += m_Speed;
 		}
 		if (GetAsyncKeyState(static_cast<int>('S')) & 1 << 16) {
-			//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 			m_ForwardAcceleration -= m_Speed;
 		}
 		if (m_FirstPerson) {
 			if (GetAsyncKeyState(static_cast<int>('A')) & 1 << 16) {
-				//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 				m_RightAcceleration -= m_Speed * HAND;
 			}
 			if (GetAsyncKeyState(static_cast<int>('D')) & 1 << 16) {
-				//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 				m_RightAcceleration += m_Speed * HAND;
 			}
 		}
@@ -82,12 +78,12 @@ namespace Agata {
 			
 			JoystickState state = Joystick::GetState(0);
 
-			if (state.thumbLX > 0.19 || state.thumbLX < -0.19) {
-				//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
-				m_RightAcceleration += state.thumbLX * m_Speed * HAND;
+			if (m_FirstPerson) {
+				if (state.thumbLX > 0.19 || state.thumbLX < -0.19) {
+					m_RightAcceleration += state.thumbLX * m_Speed * HAND;
+				}
 			}
 			if (state.thumbLY > 0.19 || state.thumbLY < -0.19) {
-				//Audio::GetInstance().PlaySoundOnCustomChannel(Audio::GetInstance().GetSoundsMap().find((char*)"Pasos")->second, 1, 0.30f);
 				m_ForwardAcceleration -= state.thumbLY * m_Speed * HAND;
 			}
 			

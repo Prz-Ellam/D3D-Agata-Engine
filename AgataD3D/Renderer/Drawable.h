@@ -28,8 +28,8 @@ namespace Agata {
 		void SetScale(const DX::XMFLOAT3& scale);
 
 		void FollowCamera(std::unique_ptr<Camera>& camera);
-	protected:
 		DX::XMMATRIX SetMatrix();
+	protected:
 		DX::XMFLOAT3 m_Position;
 		DX::XMFLOAT3 m_Rotation;
 		DX::XMFLOAT3 m_Scale;

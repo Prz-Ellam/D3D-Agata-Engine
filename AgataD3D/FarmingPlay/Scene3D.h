@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Agata.h"
+#include "Joystick.h"
 
 class Scene3D : public Agata::Scene {
 public:
@@ -34,8 +35,6 @@ private:
 	double m_Dt, m_Ts = 0.0f;
 	double m_Cycle;
 
-	Agata::Framebuffer* m_FBO;
-
 	std::unique_ptr<Agata::Camera> m_Camera;
 
 	std::shared_ptr<Agata::StaticModel> m_Vehicle;
@@ -55,7 +54,7 @@ private:
 	std::shared_ptr<Agata::Skybox> m_Skybox;
 	std::shared_ptr<Agata::Water> m_Water;
 
-	std::shared_ptr<Agata::Billboard> m_Tree1, m_Tree2;
+	std::shared_ptr<Agata::Billboard> m_Tree1, m_Tree2, m_Pole;
 	std::shared_ptr<Agata::Fire> m_Fire;
 
 	std::shared_ptr<Agata::Shader> m_StaticModelShader;
@@ -89,6 +88,7 @@ private:
 
 	Agata::BoxCollider m_SpyGlassCollider;
 	Agata::BoxCollider m_VehicleCollider;
+	Agata::BoxCollider m_VehicleCollision;
 	bool m_IsZoom = false;
 	bool m_SpyGlassArea = false;
 	bool m_VehicleArea = false;
@@ -97,6 +97,8 @@ private:
 	bool m_VehicleEnable = false;
 	bool m_IsThirdPerson = true;
 	bool m_IsInVehicle = false;
+
+	Agata::Joystick m_Joystick;
 
 	enum AnimatedModel {
 		IDLE,

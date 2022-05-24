@@ -194,7 +194,7 @@ namespace Agata {
 				vertices[i].pos.z = z * terrainProps.GridSpacingZ;
 
 				vertices[i].normal = GetNormals(x, z, length, width, terrainParams.ySize, buffer);
-
+				//vertices[i].normal = DirectX::XMFLOAT3(0, 1, 0);
 				vertices[i].uv.x = static_cast<float>(x) / (float)(length - 1);
 				vertices[i].uv.y = static_cast<float>(z) / (float)(width - 1);
 
@@ -275,10 +275,8 @@ namespace Agata {
 		float right = GetHeight(x + 1, y, length, width, height, data);
 		float top = GetHeight(x, y + 1, length, width, height, data);
 		float bottom = GetHeight(x, y - 1, length, width, height, data);
-		DX::XMVECTOR normal = DirectX::XMVectorSet(left - right, 2.0f, bottom - top, 0.0f);
-		DX::XMFLOAT3 result;
-		DX::XMStoreFloat3(&result, DX::XMVector3Normalize(normal));
-		return result;
+		DX::XMFLOAT3 normal = DX::XMFLOAT3(left - right, 2.0f, bottom - top);
+		return normal;
 
 	}
 

@@ -19,6 +19,28 @@ namespace Agata {
 	void GUI::OnRender() {
 
 		m_Buffer.c_Model = DX::XMMatrixTranspose(m_Transformation);
+		m_Buffer.c_Alpha = 1.0f;
+		m_CBO->Bind();
+		m_CBO->UpdateData(&m_Buffer);
+
+		m_Texture.Bind(0);
+
+		Renderer::DrawIndexes(m_Mesh.get());
+
+	}
+
+	void GUI::OnRender(bool range, float dt) {
+
+		if (range) {
+			m_Alpha += dt;
+		}
+		else {
+			m_Alpha -= dt;
+		}
+		m_Alpha = std::clamp(m_Alpha, 0.0f, 1.0f);
+
+		m_Buffer.c_Model = DX::XMMatrixTranspose(m_Transformation);
+		m_Buffer.c_Alpha = m_Alpha;
 		m_CBO->Bind();
 		m_CBO->UpdateData(&m_Buffer);
 

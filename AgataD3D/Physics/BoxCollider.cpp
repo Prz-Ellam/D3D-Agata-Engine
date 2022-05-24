@@ -138,7 +138,6 @@ namespace Agata {
 	bool BoxCollider::IsColliding(const BoxCollider& box) {
 
 		return (box.m_Min.x >= m_Max.x && box.m_Max.x <= m_Min.x &&
-			box.m_Min.y >= m_Max.y && box.m_Max.y <= m_Min.y &&
 			box.m_Min.z >= m_Max.z && box.m_Max.z <= m_Min.z);
 
 	}
